@@ -1,20 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   minishell.h                                        :+:    :+:            */
+/*   ft_tolower.c                                       :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
+/*   By: jmetzger <jmetzger@student.codam.n>          +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/05/30 10:12:19 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/05/30 12:16:41 by yizhang       ########   odam.nl         */
+/*   Created: 2022/10/07 17:38:41 by jmetzger      #+#    #+#                 */
+/*   Updated: 2023/01/12 00:19:41 by jmetzger      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINIISHELL_H
-# define MINIISHELL_H
+#include "libft.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-
-
-#endif
+int	ft_tolower(int value)
+{
+	if (value >= 'A' && value <= 'Z')
+		return (value = value + 32);
+	else
+		return (value);
+}

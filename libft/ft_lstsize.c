@@ -1,20 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   minishell.h                                        :+:    :+:            */
+/*   ft_lstsize.c                                       :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
+/*   By: jmetzger <jmetzger@student.codam.n>          +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/05/30 10:12:19 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/05/30 12:16:41 by yizhang       ########   odam.nl         */
+/*   Created: 2022/10/28 05:03:40 by jmetzger      #+#    #+#                 */
+/*   Updated: 2023/03/08 14:39:02 by jmetzger      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINIISHELL_H
-# define MINIISHELL_H
+#include "libft.h"
 
-#include <stdio.h>
-#include <stdlib.h>
+int	ft_lstsize(t_list *lst)
+{
+	int	i;
 
-
-#endif
+	i = 0;
+	while (lst)
+	{
+		lst = lst->next;
+		i++;
+	}
+	return (i);
+}

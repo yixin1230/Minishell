@@ -1,20 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   minishell.h                                        :+:    :+:            */
+/*   ft_putstr_fd.c                                     :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
+/*   By: jmetzger <jmetzger@student.codam.n>          +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/05/30 10:12:19 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/05/30 12:16:41 by yizhang       ########   odam.nl         */
+/*   Created: 2022/10/19 07:16:45 by jmetzger      #+#    #+#                 */
+/*   Updated: 2022/10/21 07:15:49 by jmetzger      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINIISHELL_H
-# define MINIISHELL_H
+#include "libft.h"
+#include <unistd.h>
 
-#include <stdio.h>
-#include <stdlib.h>
+void	ft_putstr_fd(char *s, int fd)
+{
+	int	i;
 
-
-#endif
+	i = 0;
+	while (s[i] != '\0')
+	{
+		write(fd, &s[i], 1);
+		i++;
+	}
+}

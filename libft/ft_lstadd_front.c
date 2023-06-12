@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   minishell.h                                        :+:    :+:            */
+/*   ft_lstadd_front.c                                  :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
+/*   By: jmetzger <jmetzger@student.codam.n>          +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/05/30 10:12:19 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/05/30 12:16:41 by yizhang       ########   odam.nl         */
+/*   Created: 2022/10/28 05:01:31 by jmetzger      #+#    #+#                 */
+/*   Updated: 2023/03/08 14:36:55 by jmetzger      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINIISHELL_H
-# define MINIISHELL_H
+#include "libft.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-
-
-#endif
+void	ft_lstadd_front(t_list **lst, t_list *new)
+{
+	new->next = *lst;
+	*lst = new;
+}

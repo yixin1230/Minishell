@@ -1,20 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   minishell.h                                        :+:    :+:            */
+/*   ft_strchr.c                                        :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
+/*   By: jmetzger <jmetzger@student.codam.n>          +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2023/05/30 10:12:19 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/05/30 12:16:41 by yizhang       ########   odam.nl         */
+/*   Created: 2022/10/10 19:11:56 by jmetzger      #+#    #+#                 */
+/*   Updated: 2023/02/08 17:29:35 by jmetzger      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINIISHELL_H
-# define MINIISHELL_H
+#include "libft.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-
-
-#endif
+char	*ft_strchr(const char *str, int n)
+{
+	while (*str != (char)n)
+	{
+		if (!*str)
+			return (NULL);
+		str++;
+	}
+	return ((char *)str);
+}
