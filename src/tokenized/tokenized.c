@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/08 13:37:57 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/06/12 14:15:15 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/06/20 11:33:37 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int quote_count(char *str, int i,int *quo_nb, char quo)
 	i++;
 	while(str[i])
 	{
-		if (str[i] == '\"')
+		if (str[i] == quo)
 		{
 			quo_nb++;;
 			break ;
@@ -71,9 +71,7 @@ t_token	*tokenized(char *str)
 	curr = top;
 	while (curr != NULL)//give every token a type
 	{
-		if (curr->prev == NULL || curr->prev->type == PIPE)
-			curr->type = CMD;
-		else if (ft_strcmp(curr->str, "|") == 0)
+		if (ft_strcmp(curr->str, "|") == 0)
 			curr->type = PIPE;
 		else if (ft_strcmp(curr->str, "&") == 0)
 			curr->type = AT;
@@ -85,6 +83,8 @@ t_token	*tokenized(char *str)
 			curr->type = HERE_DOCUMENT;
 		else if (ft_strcmp(curr->str, ">>") == 0)
 			curr->type = APPEND_REDIRECTION;
+		else if ((curr->prev == NULL || curr->prev->type == PIPE) && curr->type == EMPTY)
+			curr->type = CMD;
 		else if (curr->prev->type == CMD || curr->prev->type == ARG || curr->type == EMPTY)
 			curr->type = ARG;
 		else if (curr->prev->type == INPUT_REDIRECTION || curr->type == EMPTY)
@@ -98,14 +98,14 @@ t_token	*tokenized(char *str)
 
 //test:gcc split_token.c token_util.c tokenized.c ../../libft/libft.a
 
-int main(void)
+/* int main(void)
 {
 	t_token *test;
 	t_token *curr;
 	char *str;
-	str = "  c\'\"\' asdasda\"\'\">&| \"|\" ";
+	//str = "  c\'\"\' asdasda\"\'\">&| \"|\" ";
 	//str = " cmd arg| cmd";
-	//str = "  chkhk df";
+	str = "  chkhk df";
 	
 	test = tokenized(str);
 	curr = test;
@@ -116,5 +116,5 @@ int main(void)
 		curr = curr->next;
 	}printf("\n");
 	return 0;
-}
+} */
 
