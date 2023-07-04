@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/08 12:04:23 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/06/19 16:18:40 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/04 14:11:47 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int strlen_char(char *str, char c)
 			i++;
 		return (i);
 	}
-	while (str[i] && str[i] != c && str[i] != '\'' && str[i] != '\"' && str[i] != '|')
+	while (str[i] && str[i] != c && str[i] != '\'' && str[i] != '\"' && str[i] != '|' && str[i] != '<' && str[i] != '>')
 		i++;
 	return (i);	
 }
@@ -32,14 +32,33 @@ t_token	*new_token(char *str)
 {
 	t_token	*new;
 
+	if (!str)
+		return (NULL);
 	new = malloc(sizeof(t_token));
 	if (!new)
 		return (NULL);
-	new->str = str;
+	new->str = ft_strdup(str);
 	new->type = EMPTY;
-	new->index = 0;
 	new->next = NULL;
 	new->prev = NULL;
+	new->index = 0;
+	return (new);
+}
+
+t_token	*copy_token(t_token *old)
+{
+	t_token	*new;
+
+	if (!old)
+		return (NULL);
+	new = malloc(sizeof(t_token));
+	if (!new)
+		return (NULL);
+	new->str = ft_strdup(old->str);
+	new->type = old->type;
+	new->next = NULL;
+	new->prev = NULL;
+	new->index = 0;
 	return (new);
 }
 

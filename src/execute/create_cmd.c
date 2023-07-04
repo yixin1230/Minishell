@@ -6,50 +6,75 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 12:18:10 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/06/20 16:13:56 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/04 15:28:27 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_cmd	*token_to_cmd(t_token **token)
+void	token_to_cmd(t_data *all)
 {
-	t_cmd	*cmd;
 	t_cmd	*new;
 	t_token *curr;
 	char	**words;
 	int		len;
 	int		i;
 
-	curr = *token;
-	cmd = NULL;
-	while(curr != NULL)
+	curr = all->token;
+	words = NULL;
+	all->cmd = NULL;
+	while(curr)
 	{
 		i = 0;
-		if (curr->type == CMD)
+		if (curr->index == 0 || (curr->prev && curr->prev->type == PIPE))
 		{
 			len = cmd_len(&curr, curr->index);
 			words = malloc(sizeof(char *) * len);
 			if (!words)
-				return (NULL);//free some thing
+				print_error(NULL, 0);
 			words[len - 1] = NULL;
-			while (i < len - 1)
+			while (curr->type != PIPE && curr != NULL)
 			{
-				words[i] = curr->str;
-				i++;
-				if (curr->next == NULL)
+				if (curr->type == WORD)
+				{
+					words[i] = ft_strdup(curr->str);
+					i++;
+				}
+				if (!curr->next)
 					break ;
 				curr = curr->next;
 			}
 			new = new_cmd(words, len);
-			add_cmd_end(&cmd, new);
+			add_cmd_end(&all->cmd, new);
 		}
+		if (!curr->next)
+			break ;
 		curr = curr->next;
 	}
-	return (cmd);
+	add_redirection(all);
 }
 
- 
+void	add_redirection(t_data *all)
+{
+	t_token *curr;
+	t_cmd	*cmd;
+
+
+	if (!all->cmd || !all->token)
+		return ;
+	curr = all->token;
+	cmd = all->cmd;
+	cmd->redi = NULL;
+	while(cmd != NULL && curr != NULL)
+	{
+		if (curr->type == INFILE || curr->type == OUTFILE || curr->type == APPFILE || curr->type == DELIMI)
+			add_token_end(&cmd->redi, copy_token(curr));
+		else if (curr->type == PIPE)
+			cmd = cmd->next;
+		curr = curr->next;
+	}
+}
+
 int	cmd_len(t_token **token, int index)
 {
 	int	i;
@@ -59,16 +84,13 @@ int	cmd_len(t_token **token, int index)
 	curr = *token;
 	while(curr != NULL)
 	{
-		if (curr->index == index && curr->type == CMD && curr!= NULL)
+		if (curr->index == index)
 		{
-			i++;
-			if(curr->next == NULL)
-				return (i);
-			curr = curr->next;
-			while (curr->type == ARG && curr != NULL)
+			while (curr->type != PIPE && curr)
 			{
-				i++;
-				if(curr->next == NULL)
+				if (curr->type == WORD)
+					i++;
+				if (!curr->next)
 					return(i);
 				curr = curr->next;
 			}
@@ -89,6 +111,7 @@ t_cmd	*new_cmd(char **words, int len)
 	new->words = words;
 	new->next = NULL;
 	new->len = len;
+	new->redi = NULL;
 	return (new);
 }
 
@@ -111,8 +134,6 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 
 
 //complie:gcc create_cmd.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../../libft/libft.a
-
-
 
 //test1:add_cmd_end && new_cmd
 /* int main(int argc, char **argv, char **envp)
@@ -150,25 +171,25 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 	return 0;
 } */
 
-
-
-//complie:gcc create_cmd.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../../libft/libft.a
+//complie:gcc create_cmd.c free_error.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../../libft/libft.a
 //test2:token_to_cmd && cmd_len
 
 /* int main(int argc, char **argv, char **envp)
 {
+	t_data all;
 	char *str;
 	//str = "  c\'\"\' asdasda\"\'\">&| \"|\" dcd ";
-	str = " cmd arg| cmd aa a a a |";
+	//str = " <infile cmd  <infile arg arg>outfile| cmd1 aa a a a >1outfile|";
 	//str = " cmd arg|";
-	//str = "  chkhk df ";//have segmentation fault
+	str = "  chkhk df ";//have segmentation fault
 	//str = "  chkhk ";
-	
-	t_token *token = tokenized(str);
-	int len = cmd_len(&token, 0);
-	printf("%i ",len);
-	t_cmd *cmd = token_to_cmd(&token);
-	t_cmd *curr = cmd;
+	all.input = str;
+
+	tokenized(&all);
+	int len = cmd_len(&all.token, 0);
+	printf("len : %i \n",len);
+	token_to_cmd(&all);
+	t_cmd *curr = all.cmd;
 	while (curr != NULL)
 	{
 		int i = 0;
@@ -177,8 +198,38 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 			printf("%s ",curr->words[i]);
 			i++;
 		}
+		printf("infile: %i, outfile: %i\n", curr->infile, curr->outfile);
 		curr=curr->next;
 	} 
 	return 0;
-} 
- */
+}  */
+
+//complie:gcc create_cmd.c free_error.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../../libft/libft.a
+//test3:add_redirection
+
+/* int main(int argc, char **argv, char **envp)
+{
+	t_data all;
+	char *str;
+	//str = "  c\'\"\' asdasda\"\'\">&| \"|\" dcd ";
+	str = " <infile cmd  <infile arg arg>outfile| cmd1 aa a a a >1outfile|";
+	//str = " cmd arg|";
+	//str = "  chkhk df ";//have segmentation fault
+	//str = "  chkhk ";
+	all.input = str;
+
+	tokenized(&all);
+	int len = cmd_len(&all.token, 0);
+	printf("len : %i \n",len);
+	token_to_cmd(&all);
+	t_token *curr = all.cmd->redi;
+	printf("%s ",curr->str);
+	int i =0;
+	while (curr != NULL)
+	{
+		i++;
+		printf("%s ",curr->str);
+		curr=curr->next;
+	} 
+	return 0;
+} */
