@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/08 13:37:57 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/07/06 16:14:04 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/06 17:07:31 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,12 @@ void	tokenized(t_data *all, char **envp)
 			curr->type = APPEND_RE;
 		else if (curr->str[0] == '$' && curr->type == EMPTY)
 		{
-			curr->str = ft_strdup(find_env(&curr, envp));
+			tmp = find_env(&curr, envp);
+			if (tmp)
+				curr->str = ft_strdup(tmp);
+			else
+				curr->str = NULL;
 			curr->type = WORD;
-			
 		}
 		else if (curr->prev && curr->prev->type == INPUT_RE && curr->type == EMPTY)
 			curr->type = INFILE;
@@ -122,14 +125,14 @@ void	tokenized(t_data *all, char **envp)
 	//all.input = "  chkhk df >outfile <infile";
 	//all.input = " cmd <file  >outfile | \"|\"<infile";
 	//all.input = "cat <file1 cat > out | <ls| <file cmd"; //break pipe
-	all.input = " $PATH $$<< infile <infile cmd arg>outfile| cmd1 aa a a a >1outfile|";//$$ error
+	//all.input = " $PATH $$<< infile <infile cmd arg>outfile| cmd1 aa a a a >1outfile|";//$$ error
+	all.input = " $PATH ADS  $sdf $ df ";
 	//all.input = " $PATH ";
 	//all.input = "||\"|\"cmd "; //break pipe
 	//all.input = " \"echo\" hello ";
 	//all.input = " \"echo\" hello | wc";
 	//all.input = "<file1 cat > out \"|\" <infile "; //works 
 	//all.input = " <infile cmd >outfile | <infile";
-
 	tokenized(&all, envp);
 	curr = all.token;
 	printf("test:%s\n", all.input);
