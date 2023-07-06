@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/08 12:04:23 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/07/06 08:44:43 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/06 14:13:50 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ int strlen_char(char *str, char c)
 	}
 	while (str[i] && str[i] != c && str[i] != '\''
 		&& str[i] != '\"' && str[i] != '|'
-		&& str[i] != '<' && str[i] != '>'
-		&& str[i] != '$')
+		&& str[i] != '<' && str[i] != '>' && str[i] != '$')
 		i++;
 	return (i);	
 }
