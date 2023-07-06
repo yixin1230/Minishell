@@ -6,7 +6,7 @@
 /*   By: jmetzger <jmetzger@student.codam.n>          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/02 09:45:46 by jmetzger      #+#    #+#                 */
-/*   Updated: 2023/07/06 08:44:02 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/06 08:58:17 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ typedef struct s_cmd
 {
 	char			**words;
 	int				len;
-	struct s_token	*redi;
+	struct	s_token	*redi;
+	struct	s_token	*env;
 	struct s_cmd	*next;
 }t_cmd;
 
