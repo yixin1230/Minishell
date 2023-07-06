@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/08 13:37:57 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/07/04 15:22:32 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/06 08:43:46 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ void	tokenized(t_data *all)
 	{
 		if (ft_strcmp(curr->str, "|") == 0 && curr->type == EMPTY)
 			curr->type = PIPE;
-		else if (ft_strcmp(curr->str, "&") == 0&& curr->type == EMPTY)
-			curr->type = AT;
+		else if (ft_strcmp(curr->str, "$") == 0&& curr->type == EMPTY)
+			curr->type = DOLLAR;
 		else if (ft_strcmp(curr->str, "<") == 0&& curr->type == EMPTY)
 			curr->type = INPUT_RE;
 		else if (ft_strcmp(curr->str, ">") == 0&& curr->type == EMPTY)
@@ -90,6 +90,8 @@ void	tokenized(t_data *all)
 			curr->type = APPFILE;
 		else if (curr->prev && curr->prev->type == HERE_DOC && curr->type == EMPTY)
 			curr->type = DELIMI;
+		else if (curr->prev && curr->prev->type == DOLLAR && curr->type == EMPTY)
+			curr->type = ENV;
 		else if (curr->type == EMPTY)
 			curr->type = WORD;
 		curr = curr->next;

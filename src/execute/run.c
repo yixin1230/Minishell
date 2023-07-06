@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/19 17:07:35 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/07/04 16:37:26 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/06 08:38:41 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,21 +38,17 @@ void	cmd_child(t_cmd *cmd, char **envp)
 	pid_t	id;
 	
 
-	if (!cmd->redi)
-		pipe(fd);
+	pipe(fd);
+	do_redirection(cmd);
 	id = fork();
 	if (id == -1)
 		exit(1);
 	if (id == 0)
 	{
-		if (cmd->redi)
-			do_redirection(cmd);
-		else
-		{
-			dup2(fd[1],1);
-			close(fd[1]);
-			close(fd[0]);
-		}
+		dup2(fd[1],1);
+		close(fd[1]);
+		close(fd[0]);
+		do_redirection(cmd);
 		run_cmd(cmd, envp);
 	}
 	else
@@ -60,6 +56,11 @@ void	cmd_child(t_cmd *cmd, char **envp)
 		if (!cmd->redi)
 		{
 			dup2(fd[0],0);
+			close(fd[1]);
+			close(fd[0]);
+		}
+		else
+		{
 			close(fd[1]);
 			close(fd[0]);
 		}

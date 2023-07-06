@@ -6,7 +6,7 @@
 /*   By: jmetzger <jmetzger@student.codam.n>          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/02 09:45:46 by jmetzger      #+#    #+#                 */
-/*   Updated: 2023/07/04 16:43:03 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/06 08:44:02 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,12 @@ enum type
 	INFILE,
 	OUTPUT_RE,
 	OUTFILE,
-	AT,
+	DOLLAR,
 	APPEND_RE,
 	APPFILE,
 	HERE_DOC,
 	DELIMI,
-	ENV_VAR,
+	ENV,
 };
 
 typedef struct s_history
