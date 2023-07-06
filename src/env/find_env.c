@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/06 08:56:25 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/07/06 15:14:38 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/06 16:24:39 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,9 @@ char	*find_env(t_token **token, char **envp)
 	int	index;
 
 	if (!*token)
-		return(NULL);
+		return (NULL);
+	if (ft_strcmp((*token)->str, "$") == 0)
+		return ((*token)->str);
 	index = env_index(*token, envp);
 	if (index == -1)
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/08 13:37:57 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/07/06 15:23:38 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/06 16:14:04 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,6 @@ void	tokenized(t_data *all, char **envp)
 	{
 		if (ft_strcmp(curr->str, "|") == 0 && curr->type == EMPTY)
 			curr->type = PIPE;
-		else if (curr->str[0] == '$' && curr->type == EMPTY)
-			curr->str = ft_strdup(find_env(&curr, envp));
 		else if (ft_strcmp(curr->str, "<") == 0 && curr->type == EMPTY)
 			curr->type = INPUT_RE;
 		else if (ft_strcmp(curr->str, ">") == 0 && curr->type == EMPTY)
@@ -84,6 +82,12 @@ void	tokenized(t_data *all, char **envp)
 			curr->type = HERE_DOC;
 		else if (ft_strcmp(curr->str, ">>") == 0 && curr->type == EMPTY)
 			curr->type = APPEND_RE;
+		else if (curr->str[0] == '$' && curr->type == EMPTY)
+		{
+			curr->str = ft_strdup(find_env(&curr, envp));
+			curr->type = WORD;
+			
+		}
 		else if (curr->prev && curr->prev->type == INPUT_RE && curr->type == EMPTY)
 			curr->type = INFILE;
 		else if (curr->prev && curr->prev->type == OUTPUT_RE && curr->type == EMPTY)
@@ -92,7 +96,7 @@ void	tokenized(t_data *all, char **envp)
 			curr->type = APPFILE;
 		else if (curr->prev && curr->prev->type == HERE_DOC && curr->type == EMPTY)
 			curr->type = DELIMI;
-		if (curr->type == EMPTY)
+		else if (curr->type == EMPTY)
 			curr->type = WORD;
 		if (!curr->next)
 			return ;
@@ -118,7 +122,7 @@ void	tokenized(t_data *all, char **envp)
 	//all.input = "  chkhk df >outfile <infile";
 	//all.input = " cmd <file  >outfile | \"|\"<infile";
 	//all.input = "cat <file1 cat > out | <ls| <file cmd"; //break pipe
-	all.input = " $PATH << infile <infile cmd arg>outfile| cmd1 aa a a a >1outfile|";
+	all.input = " $PATH $$<< infile <infile cmd arg>outfile| cmd1 aa a a a >1outfile|";//$$ error
 	//all.input = " $PATH ";
 	//all.input = "||\"|\"cmd "; //break pipe
 	//all.input = " \"echo\" hello ";
@@ -135,5 +139,5 @@ void	tokenized(t_data *all, char **envp)
 		curr = curr->next;
 	} 
 	return 0;
-}
- */
+} */
+

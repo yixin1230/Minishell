@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/08 12:06:38 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/07/06 15:21:10 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/06 16:37:36 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,9 +128,11 @@ t_token	*split_token(char *str)
 	//str = "|||cmd ";
 	//str = "  c\"\'\" asdasda\"\'\">&| \"|\" ";
 	//str = "&&&cmd "; //break pipe
-	str = "$ adisad $PATH  c\"\'\'\" <<<<< c\'\"\"\' b\"cd\" c \"\'\'\" | \'hello world>\'>>";
+	//str = "$ adisad $PATH  $$<<c\"\'\'\" <<<<< c\'\"\"\' b\"cd\" c \"\'\'\" | \'hello world>\'>> ";
+	str = "$PATH $$<< infile <infile cmd arg>outfile| cmd1 aa a a a >1outfile|";
 	//str = "$ adisad  $PATH  a\"\'\'\"a <<<";
 	//str = " $ $chkhk$$$ df";
+	str = " $PATH ADS $$ $chkhk df ";//have segmentation fault
 	//str = " cmd arg| cmd";
 	//str = " <infile as<infile cmd arg>outfile| cmd1 aa a a a >1outfile|";
 	test = split_token(str);
@@ -143,4 +145,5 @@ t_token	*split_token(char *str)
 		curr = curr->next;
 	}
 	return 0;
-} */
+}
+ */
