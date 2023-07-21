@@ -31,9 +31,9 @@ t_token	*split_token(char *str)
 	while (str[i])
 	{
 		if (str[i] == '\'')
-			i = split_s_quote(str, i, '\'', &top);
+			i = split_with_quote(str, i, '\'', &top);
 		else if (str[i] == '\"')
-			i = split_quote(str, i, '\"', &top);
+			i = split_with_quote(str, i, '\"', &top);
 		else if (str[i] == '<' || str[i] == '>')
 			i = split_redi(str, i, str[i], &top);
 		else if (str[i] == '|')
@@ -80,9 +80,9 @@ t_token	*split_again_token(char *str)
 	while (str[i])
 	{
 		if (str[i] == '\'')
-			i = split_quote(str, i, '\'', &top);
+			i = split_without_quote(str, i, '\'', &top);
 		else if (str[i] == '\"')
-			i = split_quote(str, i, '\"', &top);
+			i = split_without_quote(str, i, '\"', &top);
 		else if (str[i] == '<' || str[i] == '>')
 			i = split_redi(str, i, str[i], &top);
 		else if (str[i] == '|')
@@ -102,7 +102,7 @@ t_token	*split_again_token(char *str)
 	return (top);
 }
 
-int	split_general_char(char *str, int i, t_token **top)
+int	split_general_char(char *str, int i, t_token **top)//not works yet
 {
 	int		len;
 	char	*line;
@@ -114,7 +114,7 @@ int	split_general_char(char *str, int i, t_token **top)
 	return (i);
 }
 
-int	split_quote(char *str, int	i, char c, t_token **top)
+int	split_without_quote(char *str, int	i, char c, t_token **top)
 {
 	int		start;
 	int		len;
@@ -137,7 +137,7 @@ int	split_quote(char *str, int	i, char c, t_token **top)
 	return (i);
 }
 
-int	split_s_quote(char *str, int	i, char c, t_token **top)
+int	split_with_quote(char *str, int	i, char c, t_token **top)
 {
 	int		start;
 	int		len;
@@ -152,10 +152,6 @@ int	split_s_quote(char *str, int	i, char c, t_token **top)
 		line = ft_substr(str, start, len);
 	i = len + start + 1;
 	new = new_token(line);
-	if (c == '\'')
-		new->type = SQUO;
-	else
-		new->type = WORD;
 	add_token_end(top, new);
 	return (i);
 }

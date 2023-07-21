@@ -94,14 +94,14 @@ void		add_token_end(t_token **top, t_token *new);
 t_token		*new_token(char *str);
 t_token		*split_token(char *str);
 t_token		*copy_token(t_token *old);
-int			split_quote(char *str, int i, char c, t_token **top);
 int			split_redi(char *str, int	i, char c, t_token **top);
 int			split_char(char *str, int i, t_token **top);
 void		check_token(t_data *all);
 int			space_len(char *str);
 int			split_general_char(char *str, int i, t_token **top);
 t_token		*split_again_token(char *str);
-int		split_s_quote(char *str, int	i, char c, t_token **top);
+int			split_with_quote(char *str, int i, char c, t_token **top);
+int			split_without_quote(char *str, int	i, char c, t_token **top);
 
 //cmd
 int		cmd_len(t_token **token, int index);
