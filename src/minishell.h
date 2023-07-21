@@ -101,6 +101,8 @@ void		check_token(t_data *all);
 int			space_len(char *str);
 int			split_general_char(char *str, int i, t_token **top);
 t_token		*split_again_token(char *str);
+int		split_s_quote(char *str, int	i, char c, t_token **top);
+
 //cmd
 int		cmd_len(t_token **token, int index);
 void	add_cmd_end(t_cmd **top, t_cmd *new);

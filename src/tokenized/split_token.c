@@ -31,7 +31,7 @@ t_token	*split_token(char *str)
 	while (str[i])
 	{
 		if (str[i] == '\'')
-			i = split_quote(str, i, '\'', &top);
+			i = split_s_quote(str, i, '\'', &top);
 		else if (str[i] == '\"')
 			i = split_quote(str, i, '\"', &top);
 		else if (str[i] == '<' || str[i] == '>')
@@ -123,6 +123,29 @@ int	split_quote(char *str, int	i, char c, t_token **top)
 
 	start = i + 1;
 	len = strlen_char(&str[start], c);
+	if (len == 0)
+		line = NULL;
+	else
+		line = ft_substr(str, start, len);
+	i = len + start + 1;
+	new = new_token(line);
+	if (c == '\'')
+		new->type = SQUO;
+	else
+		new->type = WORD;
+	add_token_end(top, new);
+	return (i);
+}
+
+int	split_s_quote(char *str, int	i, char c, t_token **top)
+{
+	int		start;
+	int		len;
+	char	*line;
+	t_token	*new;
+
+	start = i;
+	len = strlen_char(&str[start + 1], c) + 2;
 	if (len == 0)
 		line = NULL;
 	else

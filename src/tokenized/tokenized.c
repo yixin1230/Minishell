@@ -66,14 +66,13 @@ void	tokenized(t_data *all, char **envp)
 	to_tmp = NULL;
 	if (quote_check(all->input) == 1)
 		exit (1);
-	all->token = split_token(all->input);
+	all->token = split_token(all->input);//env
 	all->input = token_to_str(&all->token);
 	all->token = split_again_token(all->input);
-	//check_token(all);
 	curr = all->token;
 	while (curr != NULL)
 	{
-		if (curr->str && have_dollar(curr->str) && curr->type != SQUO)//segv
+		 if (curr->str && have_dollar(curr->str) && curr->type != SQUO)//segv
 		{
 			to_tmp = dollar_split(curr->str);
 			swap_val(&to_tmp, envp, all);
@@ -81,7 +80,7 @@ void	tokenized(t_data *all, char **envp)
 			curr->str = token_to_str(&to_tmp);
 			free(tmp);
 			//free_token(to_tmp);
-		}
+		} 
 		if (curr->str && ft_strcmp(curr->str, "|") == 0 && curr->type == EMPTY)
 			curr->type = PIPE;
 		else if (curr->str && ft_strcmp(curr->str, "<") == 0 && curr->type == EMPTY)
@@ -126,7 +125,7 @@ void	tokenized(t_data *all, char **envp)
 	//all.input = "  chkhk df >outfile <infile";
 	//all.input = " cmd <file  >outfile | \"|\"<infile";
 	//all.input = "cat <file1 cat > out | <ls| <file cmd"; //break pipe
-	all.input = " $PATH $$<< infi\'\'le   	  hgjgh$dsf$sdfd$?$$$$$ <infile cmd arg>outfile| cmd1 aa a a a >1outfile|";//$$ error
+	all.input = " \'$PATH\' $$<< infi\'\'le   	  hgjgh$dsf$sdfd$?$$$$$ <infile cmd arg>outfile| cmd1 aa a a a >1outfile|";//$$ error
 	//all.input = " $PATH ADS  $sdf $ df hgjgh$dsf$sdfd$?$$$$$";
 	//all.input = " $PATH ";
 	//all.input = "||\"|\"cmd "; //break pipe
