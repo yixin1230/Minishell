@@ -67,6 +67,9 @@ void	tokenized(t_data *all, char **envp)
 	if (quote_check(all->input) == 1)
 		exit (1);
 	all->token = split_token(all->input);
+	all->input = token_to_str(&all->token);
+	all->token = split_again_token(all->input);
+	//check_token(all);
 	curr = all->token;
 	while (curr != NULL)
 	{
@@ -105,7 +108,7 @@ void	tokenized(t_data *all, char **envp)
 	}
 }
 
-//test:gcc split_token.c token_util.c tokenized.c ../env/find_env.c ../env/handle_dollar_sign.c ../../libft/libft.a
+//test:gcc split_token.c token_util.c tokenized.c ../tool/free_error.c ../tool/protection.c ../tool/tool_utils.c ../env/find_env.c ../env/handle_dollar_sign.c ../../libft/libft.a
 
 /* int main(int argc, char **argv,char **envp)
 {
@@ -123,7 +126,7 @@ void	tokenized(t_data *all, char **envp)
 	//all.input = "  chkhk df >outfile <infile";
 	//all.input = " cmd <file  >outfile | \"|\"<infile";
 	//all.input = "cat <file1 cat > out | <ls| <file cmd"; //break pipe
-	all.input = " $PATH $$<< infile hgjgh$dsf$sdfd$?$$$$$ <infile cmd arg>outfile| cmd1 aa a a a >1outfile|";//$$ error
+	all.input = " $PATH $$<< infi\'\'le   	  hgjgh$dsf$sdfd$?$$$$$ <infile cmd arg>outfile| cmd1 aa a a a >1outfile|";//$$ error
 	//all.input = " $PATH ADS  $sdf $ df hgjgh$dsf$sdfd$?$$$$$";
 	//all.input = " $PATH ";
 	//all.input = "||\"|\"cmd "; //break pipe
@@ -136,9 +139,9 @@ void	tokenized(t_data *all, char **envp)
 	printf("test:%s\n", all.input);
 	 while (curr != NULL)
 	{
-		printf(" %i: type :%i :%s\n", curr->index, curr->type , curr->str);
+		printf(" %i: type :%i :%s$\n", curr->index, curr->type , curr->str);
 		curr = curr->next;
 	} 
 	return 0;
-}
- */
+} */
+

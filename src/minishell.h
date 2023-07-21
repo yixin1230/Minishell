@@ -39,7 +39,8 @@ enum type
 	DELIMI,
 	DOLLAR,
 	ENV,
-	SQUO
+	SQUO,
+	SPACES,
 };
 
 typedef struct s_history
@@ -96,8 +97,10 @@ t_token		*copy_token(t_token *old);
 int			split_quote(char *str, int i, char c, t_token **top);
 int			split_redi(char *str, int	i, char c, t_token **top);
 int			split_char(char *str, int i, t_token **top);
-void	check_token(t_data *all);
-
+void		check_token(t_data *all);
+int			space_len(char *str);
+int			split_general_char(char *str, int i, t_token **top);
+t_token		*split_again_token(char *str);
 //cmd
 int		cmd_len(t_token **token, int index);
 void	add_cmd_end(t_cmd **top, t_cmd *new);

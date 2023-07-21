@@ -15,42 +15,46 @@
 void	check_token(t_data *all)//should happen after env
 {
 	t_token	*curr;
-	char	*topstr;
-	char	*endstr;
+	t_token	*new_top;
+	t_token	*new;
+	char	*str;
 
 	curr = all->token;
+	all->token = new_top;
+	str = NULL;
 	while (curr)
 	{
-		if (curr->str && curr->next && !curr->next->str)
+		if (curr && !curr->type == SPACES)
 		{
-			topstr = curr->str;
-			printf("top:%s",topstr);
-		}
-		while (curr && !curr->str)
-		{
-			if (!curr->next)
-				break ;
-			curr = curr->next;
-		}
-		if (curr && curr->str && curr->prev && !curr->prev->str)
-		{
-			endstr = curr->str;
-			printf("end:%s",endstr);
+			while (curr && !curr->type == SPACES)
+			{
+				if (!str)
+				{
+					if (!curr->str)
+						str = NULL;
+					else
+						str = ft_strdup(curr->str);
+				}
+				else
+					str = ft_strjoin(str, curr->str);
+				if (!curr->next)
+					break ;
+				curr = curr->next;
+			}
+			printf("str:%s\n",str);
+			new = new_token(str);
+			add_token_end(&new_top, new);
 		}
 		if (!curr->next)
 			return ;
 		curr = curr->next;
 	}
+	
+	free_token(curr);
 }
 
-// void	delete_token(t_token *token)
-// {
-
-// }
-
-
 //test:gcc check_token.c split_token.c token_util.c tokenized.c ../tool/free_error.c ../tool/protection.c ../tool/tool_utils.c ../env/find_env.c ../env/handle_dollar_sign.c ../../libft/libft.a
-int main(int argc, char **argv,char **envp)
+/* int main(int argc, char **argv,char **envp)
 {
 	t_token *curr;
 	t_data	all;
@@ -66,7 +70,7 @@ int main(int argc, char **argv,char **envp)
 	//all.input = "  chkhk df >outfile <infile";
 	//all.input = " cmd <file  >outfile | \"|\"<infile";
 	//all.input = "cat <file1 cat > out | <ls| <file cmd"; //break pipe
-	all.input = " $PA''TH $$<< inf''ile hgj''gh$dsf$sdfd$?$$$$$ <infile cmd arg>outfile| cmd1 aa a a a >1outfile|";//$$ error
+	all.input = " $PA\'\'jkj\'\'asda\'\'TH $$<<   inf\'\'ile hgj\'\'gh$dsf$sdfd$?$$$$$ <infile cmd arg>outfile| cmd1 aa a a a >1outfile|";//$$ error
 	//all.input = " $PATH ADS  $sdf $ df hgjgh$dsf$sdfd$?$$$$$";
 	//all.input = " $PATH ";
 	//all.input = "||\"|\"cmd "; //break pipe
@@ -75,13 +79,13 @@ int main(int argc, char **argv,char **envp)
 	//all.input = "<file1 cat > out \"|\" <infile "; //works 
 	//all.input = " <infile cmd >outfile | <infile";
 	tokenized(&all, envp);
-	check_token(&all);
+	//check_token(&all);
 	curr = all.token;
 	printf("test:%s\n", all.input);
 	 while (curr != NULL)
 	{
-		printf(" %i: type :%i :%s\n", curr->index, curr->type , curr->str);
+		printf(" %i: type :%i :%s$\n", curr->index, curr->type , curr->str);
 		curr = curr->next;
 	} 
 	return 0;
-}
+} */
