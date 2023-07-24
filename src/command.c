@@ -14,8 +14,10 @@
 
 void ft_commands(char **envp, t_data *all)
 {
-	t_cmd *curr;
+	t_cmd	*curr;
+	int		i;
 
+	i = 0;
 	if (ft_strcmp(all->input, "exit") == 0)
 		exit(0);
 	//else if (ft_strcmp(all->input, "history") == 0)
@@ -30,8 +32,12 @@ void ft_commands(char **envp, t_data *all)
 		//malloc t_pid ,in the end waitpid_loop;
 		//loop_redi cmd
 		//below are fork thing
+		//open_pipe();
+		all->id = malloc(sizeof(pid_t) * all->cmd_len);
+		if (!all->id)
+			return ;
 		if (curr && !curr->next)
-			last_cmd_child(curr, envp, all);
+			one_cmd_child(curr, envp, all);
 		else if (curr && curr->next)
 		{
 			while (curr)
@@ -42,7 +48,14 @@ void ft_commands(char **envp, t_data *all)
 				curr = curr->next;
 			}
 		}
-		//here should waitpid
+		while (i < all->cmd_len)
+		{
+			protect_waitpid(all->id[i], &all->status, 0);
+			if (WEXITSTATUS(all->status))
+				all->status = WEXITSTATUS(all->status);
+			i++;
+		}
+		free_cmd(all);
 	}
 }
 

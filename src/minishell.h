@@ -58,12 +58,17 @@ typedef struct s_data
 	struct	s_history	*history;
 	int					status;
 	char				*input;
+	pid_t				*id;
+	int					cmd_len;
 }t_data;
 
 typedef struct s_cmd
 {
 	char			**words;
 	int				len;
+	int				index;
+	int				fd_in;
+	int				fd_out;
 	struct	s_token	*redi;
 	struct s_cmd	*next;
 }t_cmd;
@@ -117,7 +122,7 @@ void	run_cmd(t_cmd *cmd, char **envp);
 
 //child
 void	cmd_child(t_cmd *cmd, char **envp, t_data *all);
-void	last_cmd_child(t_cmd *cmd, char **envp, t_data *all);
+void	one_cmd_child(t_cmd *cmd, char **envp, t_data *all);
 
 //free and print error : cmd && token && str
 void	print_error(char *str, int errcode);
@@ -161,5 +166,9 @@ void ft_commands(char **envp, t_data *data);
 //tool
 int	ft_isspace(char c);
 
+//pipe
+void	free_fd_2d(int **fd_2d);
+int	open_pipe(t_data *all);
+int	init_pipe(t_data *all, t_cmd *cmd);
 
 #endif
