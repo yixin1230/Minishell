@@ -9,7 +9,6 @@
 /*   Updated: 2023/07/19 11:23:52 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -104,9 +103,12 @@ int			split_char(char *str, int i, t_token **top);
 void		check_token(t_data *all);
 int			space_len(char *str);
 int			split_general_char(char *str, int i, t_token **top);
-t_token		*split_again_token(char *str);
 int			split_with_quote(char *str, int i, char c, t_token **top);
 int			split_without_quote(char *str, int	i, char c, t_token **top);
+void		add_env(t_data *all, t_token **top, char **envp);
+int			again_strlen_char(char *str, char c);
+int			non_dollar_len(char *str);
+t_token		*delspace_jointoken(t_token ** token);
 
 //cmd
 int		cmd_len(t_token **token, int index);
@@ -114,6 +116,7 @@ void	add_cmd_end(t_cmd **top, t_cmd *new);
 void	token_to_cmd(t_data *all);
 t_cmd	*new_cmd(char **words, int len);
 t_cmd	*ft_new_cmd(void);
+char *token_to_cmdstr(t_token **top , int index);
 
 //run
 char	*find_path(char *cmd, char **envp);
@@ -166,9 +169,5 @@ void ft_commands(char **envp, t_data *data);
 //tool
 int	ft_isspace(char c);
 
-//pipe
-void	free_fd_2d(int **fd_2d);
-int	open_pipe(t_data *all);
-int	init_pipe(t_data *all, t_cmd *cmd);
 
 #endif

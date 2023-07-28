@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/24 09:10:27 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/07/24 10:30:32 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/28 14:40:09 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,25 @@
 
 int	init_pipe(t_data *all, t_cmd *cmd)
 {
+	int	*fd;
 	
+	fd = malloc(siezof(int) * 2);
+	if (fd)
+		return ;
+	protect_pipe(fd);
+	cmd->in = fd[0];
+	cmd->out = fd[1];
+	close(cmd->in);
+	close(cmd->out);
 }
 
 int	open_pipe(t_data *all)
 {
-	init	**fd_2d;
+	int		**fd_2d;
+	int		i;
 	t_cmd	*curr;
 
+	i  = 0;
 	fd_2d = malloc(sizeof(int*) * (all->cmd_len + 1));
 	if (!ft_2d)
 		return (1);
