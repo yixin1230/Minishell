@@ -55,31 +55,6 @@ int quote_count(char *str, int i,int *quo_nb, char quo)
 	return (i);
 }
 
-void	add_env(t_data *all, t_token **top, char **envp)
-{
-	t_token		*curr;
-	t_token		*to_tmp;
-	char	*tmp;
-
-	curr = *top;
-	tmp = NULL;
-	to_tmp = NULL;
-	while (curr != NULL)
-	{
-		 if (curr->str && have_dollar(curr->str) && curr->type != SQUO)//segv
-		{
-			to_tmp = dollar_split(curr->str);
-			swap_val(&to_tmp, envp, all);
-			tmp = curr->str;
-			curr->str = token_to_str(&to_tmp);
-			free(tmp);
-		} 
-		if (!curr->next)
-			return ;
-		curr = curr->next;
-	}
-}
-
 t_token	*delspace_jointoken(t_token ** token)
 {
 	t_token	*curr;
@@ -118,7 +93,7 @@ t_token	*delspace_jointoken(t_token ** token)
 			break ;
 		curr = curr->next;
 	}
-	//free_token(curr);
+	free_token(curr);
 	return (top);
 }
 

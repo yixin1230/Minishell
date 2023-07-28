@@ -42,7 +42,7 @@ void ft_commands(char **envp, t_data *all)
 		{
 			while (curr)
 			{
-				cmd_child(curr, envp, all);
+				one_cmd_child(curr, envp, all);
 				if (!curr->next)
 					return ;
 				curr = curr->next;

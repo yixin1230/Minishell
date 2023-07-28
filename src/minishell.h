@@ -105,7 +105,6 @@ int			space_len(char *str);
 int			split_general_char(char *str, int i, t_token **top);
 int			split_with_quote(char *str, int i, char c, t_token **top);
 int			split_without_quote(char *str, int	i, char c, t_token **top);
-void		add_env(t_data *all, t_token **top, char **envp);
 int			again_strlen_char(char *str, char c);
 int			non_dollar_len(char *str);
 t_token		*delspace_jointoken(t_token ** token);

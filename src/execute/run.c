@@ -57,8 +57,8 @@ void	cmd_child(t_cmd *cmd, char **envp, t_data *all)
 	//if (!cmd->redi)
 	//	protect_dup2(fd[0],0);
 	//protect_dup2(fd[0],0);
-	//protect_close(fd[1]);
-	//protect_close(fd[0]);
+	protect_close(fd[1]);
+	protect_close(fd[0]);
 	//protect_waitpid(id, &all->status, 0);
 	//all->status = WEXITSTATUS(status);
 	//}

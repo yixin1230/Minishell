@@ -178,34 +178,35 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 //complie:gcc create_cmd.c ../tool/free_error.c ../tool/tool_utils.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../env/find_env.c ../env/handle_dollar_sign.c ../../libft/libft.a
 //test2:token_to_cmd && cmd_len
 
-// int main(int argc, char **argv, char **envp)
-// {
-// 	t_data all;
-// 	char *str;
-// 	//str = "  c\'\"\' asdasda\"\'\">&| \"|\" dcd ";
-// 	//str = " <infile cmd  <infile arg arg>outfile| cmd1 aa a a a >1outfile|";
-// 	str = " cmd arg|sd";
-// 	//str = " \'asdas\"\'\"\"$PATH ADS $$ $chkhk df ";//have segmentation fault
-// 	//str = "  chkhk ";
-// 	//str = "  chkhk  \"HELLO -> \'\"";
-// 	all.input = str;
-// 	tokenized(&all, envp);
-// 	int len = cmd_len(&all.token, 0);
-// 	printf("len : %i \n",len);
-// 	token_to_cmd(&all);
-// 	t_cmd *curr = all.cmd;
-// 	while (curr != NULL)
-// 	{
-// 		int i = 0;
-// 		while (i < len)
-// 		{
-// 			printf("%i: %s\n",i, curr->words[i]);
-// 			i++;
-// 		}
-// 		curr=curr->next;
-// 	}  
-// 	return 0;
-// }
+/* int main(int argc, char **argv, char **envp)
+{
+	t_data all;
+	char *str;
+	//str = "  c\'\"\' asdasda\"\'\">&| \"|\" dcd ";
+	//str = " <infile cmd  <infile arg arg>outfile| cmd1 aa a a a >1outfile|";
+	str = " cmd arg|sd";
+	//str = " \'asdas\"\'\"\"$PATH ADS $$ $chkhk df ";//have segmentation fault
+	str = "  chkhk ";
+	//str = "  chkhk  \"HELLO -> \'\"";
+	all.input = str;
+	tokenized(&all, envp);
+	int len = cmd_len(&all.token, 0);
+	printf("len : %i \n",len);
+	token_to_cmd(&all);
+	t_cmd *curr = all.cmd;
+	while (curr != NULL)
+	{
+		int i = 0;
+		int len = cmd_len(&all.token, curr->index);
+		while (i < len)
+		{
+			printf("%i: %s\n",i, curr->words[i]);
+			i++;
+		}
+		curr=curr->next;
+	}  
+	return 0;
+} */
 
 //complie:gcc create_cmd.c ../tool/free_error.c ../tool/tool_utils.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../env/find_env.c ../env/handle_dollar_sign.c ../../libft/libft.a
 //test3:add_redirection
