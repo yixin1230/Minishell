@@ -6,7 +6,7 @@
 /*   By: jmetzger <jmetzger@student.codam.n>          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/05 15:20:37 by jmetzger      #+#    #+#                 */
-/*   Updated: 2023/07/06 08:33:25 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/06 15:51:09 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void ft_commands(char **envp, t_data *all)
 	//	printf_history(all->history);
 	else if (ft_strcmp(all->input, "") != 0)
 	{
-		tokenized(all);
+		tokenized(all, envp);
 		token_to_cmd(all);
 		free_token(all->token);
 		curr = all->cmd;
