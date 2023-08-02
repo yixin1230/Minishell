@@ -19,9 +19,11 @@ void	token_to_cmd(t_data *all)
 	char	**words;
 	int		len;
 	int		i;
+	int		index;
 
 	curr = all->token;
 	all->cmd = NULL;
+	index = 0;
 	while(curr)
 	{
 		i = 0;
@@ -44,12 +46,15 @@ void	token_to_cmd(t_data *all)
 				curr = curr->next;
 			}
 			new = new_cmd(words, len);
+			new->index = index;
 			add_cmd_end(&all->cmd, new);
+			index++;
 		}
 		if (!curr->next)
 			break ;
 		curr = curr->next;
 	}
+	all->cmd_len = index;
 	add_redirection(all);
 }
 
@@ -111,6 +116,7 @@ t_cmd	*new_cmd(char **words, int len)
 	new->next = NULL;
 	new->len = len;
 	new->redi = NULL;
+	new->index = 0;
 	return (new);
 }
 
@@ -170,7 +176,7 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 	return 0;
 } */
 
-//complie:gcc create_cmd.c free_error.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../env/find_env.c ../../libft/libft.a
+//complie:gcc create_cmd.c ../tool/free_error.c ../tool/tool_utils.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../env/find_env.c ../env/handle_dollar_sign.c ../../libft/libft.a
 //test2:token_to_cmd && cmd_len
 
 /* int main(int argc, char **argv, char **envp)
@@ -179,30 +185,29 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 	char *str;
 	//str = "  c\'\"\' asdasda\"\'\">&| \"|\" dcd ";
 	//str = " <infile cmd  <infile arg arg>outfile| cmd1 aa a a a >1outfile|";
-	//str = " cmd arg|";
-	str = " $PATH ADS $$ $chkhk df ";//have segmentation fault
+	str = " cmd arg|sd|ad| asd";//ad don't have null after
+	//str = " \'asdas\"\'\"\"$PATH ADS $$ $chkhk df ";//have segmentation fault
 	//str = "  chkhk ";
+	//str = "  chkhk  \"HELLO -> \'\"";
 	all.input = str;
-
 	tokenized(&all, envp);
-	int len = cmd_len(&all.token, 0);
-	printf("len : %i \n",len);
 	token_to_cmd(&all);
 	t_cmd *curr = all.cmd;
 	while (curr != NULL)
 	{
 		int i = 0;
-		while (i < len)
+		while (i < curr->len)
 		{
-			printf("%s\n",curr->words[i]);
+			printf("%i: %s\n",i, curr->words[i]);
 			i++;
 		}
 		curr=curr->next;
 	}  
+	printf("cmd_len : %i \n",all.cmd_len);
 	return 0;
 } */
 
-//complie:gcc create_cmd.c free_error.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../env/find_env.c ../../libft/libft.a
+//complie:gcc create_cmd.c ../tool/free_error.c ../tool/tool_utils.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../env/find_env.c ../env/handle_dollar_sign.c ../../libft/libft.a
 //test3:add_redirection
 
 /* int main(int argc, char **argv, char **envp)
@@ -213,7 +218,7 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 	str = " <infile cmd  <infile arg arg>outfile| cmd1 aa a a a >1outfile|";
 	//str = " cmd arg|";
 	//str = "  chkhk df ";//have segmentation fault
-	//str = "  chkhk ";
+	//str = "  chkhk  \"HELLO -> \'\";
 	all.input = str;
 
 	tokenized(&all, envp);

@@ -47,7 +47,7 @@ typedef struct s_history
 {
 	char		*oneline;
 	int			index;
-	struct s_history	*next;
+	struct s_history	*next;			
 }t_history;
 
 typedef struct s_data
@@ -58,12 +58,17 @@ typedef struct s_data
 	struct	s_history	*history;
 	int					status;
 	char				*input;
+	pid_t				*id;
+	int					cmd_len;
 }t_data;
 
 typedef struct s_cmd
 {
 	char			**words;
+	int				index;
 	int				len;
+	int				fd_in;
+	int				fd_out;
 	struct	s_token	*redi;
 	struct s_cmd	*next;
 }t_cmd;
@@ -117,7 +122,7 @@ void	run_cmd(t_cmd *cmd, char **envp);
 
 //child
 void	cmd_child(t_cmd *cmd, char **envp, t_data *all);
-void	last_cmd_child(t_cmd *cmd, char **envp, t_data *all);
+void	one_cmd_child(t_cmd *cmd, char **envp, t_data *all);
 
 //free and print error : cmd && token && str
 void	print_error(char *str, int errcode);
@@ -134,9 +139,9 @@ void	protect_pipe(int fd[2]);
 //void	protect_open(int fd[2]);
 
 //redi
-void	redi_in(t_token *redi);
-void	redi_out(t_token *redi);
-void	redi_app(t_token *redi);
+void	redi_in(t_cmd *cmd, t_token *redi);
+void	redi_out(t_cmd *cmd, t_token *redi);
+void	redi_app(t_cmd *cmd, t_token *redi);
 void	add_redirection(t_data *all);
 void	do_redirection(t_cmd *cmd, t_data *all, char **envp);
 void	redi_here_doc(t_token *redi, t_data *all, char **envp);
@@ -161,5 +166,10 @@ void ft_commands(char **envp, t_data *data);
 //tool
 int	ft_isspace(char c);
 
+//pipe
+int	init_pipe(t_data *all, t_cmd *cmd, int **fd_2d);
+int	open_pipe(t_data *all);
+void	free_fd_2d(int **fd_2d);
+int	redi_loop(t_cmd **top, t_data *all, char **envp);
 
 #endif
