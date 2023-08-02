@@ -39,12 +39,11 @@ void	cmd_child(t_cmd *cmd, char **envp, t_data *all)
 		exit(0);
 	if (all->id[cmd->index] == 0)
 	{
-		protect_dup2(cmd->fd_in, 0);
-		protect_dup2(cmd->fd_out, 1);
 		if (cmd->fd_in != 0)
-			protect_close(cmd->fd_in);
+			protect_dup2(cmd->fd_in, 0);
 		if (cmd->fd_out != 1)
-			protect_close(cmd->fd_out);
+			protect_dup2(cmd->fd_out, 1);
+		close_all_fd(&all->cmd);
 		run_cmd(cmd, envp);
 	}
 	if (cmd->fd_in != 0)

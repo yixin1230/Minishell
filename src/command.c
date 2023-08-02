@@ -66,3 +66,20 @@ int	redi_loop(t_cmd **top, t_data *all, char **envp)
 	return (0);
 }
 
+int	close_all_fd(t_cmd **top)
+{
+	t_cmd	*curr;
+
+	curr = *top;
+	while (curr)
+	{
+		if (curr->fd_in != 0)
+			protect_close(curr->fd_in);
+		if (curr->fd_out != 1)
+			protect_close(curr->fd_out);
+		if (!curr->next)
+			return (0);
+		curr = curr->next;
+	}
+	return (0);
+}

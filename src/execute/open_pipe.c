@@ -22,7 +22,7 @@ int	init_pipe(t_data *all, t_cmd *cmd, int **fd_2d)
 	if (cmd->index == 0)
 		cmd->fd_in = 0;
 	else
-		cmd->fd_in = fd_2d[cmd->index][0];
+		cmd->fd_in = fd_2d[cmd->index - 1][0];
 	if (!cmd->next)
 	{
 		close(fd_2d[cmd->index][0]);
@@ -39,10 +39,10 @@ int	open_pipe(t_data *all)
 	int		**fd_2d;
 	t_cmd	*curr;
 
-	fd_2d = malloc(sizeof(int*) * all->cmd_len);
+	fd_2d = malloc(sizeof(int*) * (all->cmd_len + 1));
 	if (!fd_2d)
 		return (1);
-	fd_2d[all->cmd_len - 1] = NULL;
+	fd_2d[all->cmd_len] = NULL;
 	curr = all->cmd;
 	while (curr)
 	{
