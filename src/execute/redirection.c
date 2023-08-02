@@ -43,6 +43,7 @@ void	redi_in(t_cmd *cmd, t_token *redi)
 	if (file < 0)
 		print_error(redi->str, 1);
 	cmd->fd_in = file;
+	//protect_dup2(file, 0);
 	//protect_close(file);
 }
 
@@ -54,6 +55,7 @@ void	redi_out(t_cmd *cmd, t_token *redi)
 	if(file < 0)
 		print_error(redi->str, 1);
 	cmd->fd_out = file;
+	//protect_dup2(file, 1);
 	//protect_close(file);
 }
 
@@ -65,5 +67,6 @@ void	redi_app(t_cmd *cmd, t_token *redi)
 	if (file < 0)
 		print_error(redi->str, 1);
 	cmd->fd_out = file;
+	//protect_dup2(file, 1);
 	//protect_close(file);
 }
