@@ -107,8 +107,12 @@ int	cmd_len(t_token **token, int index)
 
 t_cmd	*new_cmd(char **words, int len)
 {
+	int		tmp_in;
+	int		tmp_out;
 	t_cmd	*new;
-
+	
+	tmp_in = dup(0);
+	tmp_out = dup(1);
 	new = malloc(sizeof(t_cmd));
 	if (!new)
 		return (NULL);
@@ -117,8 +121,8 @@ t_cmd	*new_cmd(char **words, int len)
 	new->len = len;
 	new->redi = NULL;
 	new->index = 0;
-	new->fd_in = 0;
-	new->fd_out = 1;
+	new->fd_in = tmp_in;
+	new->fd_out = tmp_out;
 	return (new);
 }
 

@@ -1,9 +1,2 @@
-Makefile
-f
-file
-libft
-minishell
-obj
-src
-test
-yizhang
+       9       9      53
+       1       1       4

@@ -27,7 +27,7 @@ void ft_commands(char **envp, t_data *all)
 		tokenized(all, envp);
 		token_to_cmd(all);
 		free_token(all->token);
-		//open_pipe(all);
+		open_pipe(all);
 		redi_loop(&all->cmd, all, envp);
 		all->id = malloc(sizeof(pid_t) * all->cmd_len);
 		if (!all->id)
@@ -40,6 +40,7 @@ void ft_commands(char **envp, t_data *all)
 				break ;
 			curr = curr->next;
 		}
+		close_all_fd(&all->cmd);
 		while (i < all->cmd_len)
 		{
 			protect_waitpid(all->id[i], &all->status, 0);

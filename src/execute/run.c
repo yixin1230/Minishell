@@ -34,51 +34,23 @@ void	run_cmd(t_cmd *cmd, char **envp)
 
 void	cmd_child(t_cmd *cmd, char **envp, t_data *all)
 {
-	int		fd[2];
-	
-	protect_pipe(fd);
 	all->id[cmd->index] = fork();
 	if (all->id[cmd->index] == -1)
 		exit(0);
 	if (all->id[cmd->index] == 0)
 	{
 		if (cmd->fd_in != 0)
-		{
-			protect_dup2(cmd->fd_in, 1);
-			protect_close(cmd->fd_in);
-		}
+			protect_dup2(cmd->fd_in, 0);
 		if (cmd->fd_out != 1)
-		{
 			protect_dup2(cmd->fd_out, 1);
-			protect_close(cmd->fd_out);
-		}
-		else if (cmd->index == all->cmd_len - 1)
-		{
-			protect_dup2(1, 1);
-		}
-		else
-		{
-			protect_dup2(fd[1], 1);
-			protect_close(fd[1]);
-		}
-		//close_all_fd(&all->cmd);
+		close_all_fd(&all->cmd);
 		run_cmd(cmd, envp);
+		exit(0);
 	}
-	if (cmd->fd_in != 0)
-	{
-		protect_dup2(cmd->fd_in, 0);
-		//protect_close(cmd->fd_in);
-	}
-	else
-	{
-		protect_dup2(fd[0], 0);
-		//protect_close(fd[0]);
-	}
-	if (cmd->fd_in != 0)
-	{
-		protect_dup2(cmd->fd_in, 1);
-		//protect_close(cmd->fd_in);
-	}
+	// if (cmd->fd_in != 0)
+	// 	protect_close(cmd->fd_in);
+	// if (cmd->fd_out != 1)
+	// 	protect_close(cmd->fd_out);
 }
 
 void	one_cmd_child(t_cmd *cmd, char **envp, t_data *all)
