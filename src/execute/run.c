@@ -47,20 +47,4 @@ void	cmd_child(t_cmd *cmd, char **envp, t_data *all)
 		run_cmd(cmd, envp);
 		exit(0);
 	}
-	// if (cmd->fd_in != 0)
-	// 	protect_close(cmd->fd_in);
-	// if (cmd->fd_out != 1)
-	// 	protect_close(cmd->fd_out);
 }
-
-void	one_cmd_child(t_cmd *cmd, char **envp, t_data *all)
-{
-	all->id[cmd->index] = fork();
-	if (all->id[cmd->index] == -1)
-		print_error(NULL, 0);
-	if (all->id[cmd->index] == 0)
-		run_cmd(cmd, envp);
-}
-
-//complie:gcc find_path.c create_cmd.c run.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../../libft/libft.a
-//test

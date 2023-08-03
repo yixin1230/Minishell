@@ -1,2 +1,10 @@
-       9       9      53
-       1       1       4
+Makefile
+f
+file
+file2
+libft
+minishell
+obj
+src
+test
+yizhang

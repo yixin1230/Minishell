@@ -32,7 +32,7 @@ int	dollar_len(char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '$' || ft_isspace(str[i]))
+		if (str[i] == '$' || ft_isspace(str[i]) || str[i] == '\'' || str[i] == '\"')
 			break ;
 		i++;
 	}
@@ -49,38 +49,52 @@ int	space_len(char *str)
 	return (i);
 }
 
+int	non_dollar_len(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '$' || ft_isspace(str[i]) )
+			break ;
+		i++;
+	}
+		
+	return (i);
+}
+
 t_token *dollar_split(char *str)
 {
 	int	i;
-	int	j;
 	int one_len;
 	char *line;
 	t_token	*top;
 	
 	i = 0;
-	j = 0;
 	top = NULL;
 	if (!str)
 		return (new_token(NULL));
-	
 	while (str[i])
 	{
-		if (str[i] == '$')
+		if (str[i] == '\'')
+			i = split_with_quote(str, i, '\'', &top);
+		else if (str[i] == '$')
 		{
 			if (str[i + 1] && str[i + 1] == '$')
 			{
 				line = ft_substr(str, i, 2);
 				add_token_end(&top, new_token(line));
+				//printf("2,%s \n", line);
 				i += 2;
-				j++;
 			}
 			else
 			{
 				one_len = dollar_len(&str[i + 1]) + 1;
 				line = ft_substr(str, i, one_len);
 				add_token_end(&top, new_token(line));
+				//printf("1,%s \n", line);
 				i += one_len;
-				j++;
 			}
 		}
 		else if(!ft_isspace(str[i]))
@@ -88,17 +102,19 @@ t_token *dollar_split(char *str)
 			one_len = dollar_len(&str[i]);
 			line = ft_substr(str, i, one_len);
 			add_token_end(&top, new_token(line));//segv
+			//printf("3,%s \n", line);
 			i += one_len;
-			j++;
 		}
 		else if(ft_isspace(str[i]))
 		{
 			one_len = space_len(&str[i]);
 			line = ft_substr(str, i, one_len);
 			add_token_end(&top, new_token(line));//segv
+			//printf("4,%s \n", line);
 			i += one_len;
-			j++;
 		}
+		else
+			i++;
 	}
 	return (top);
 }
@@ -106,7 +122,11 @@ t_token *dollar_split(char *str)
 void swap_val(t_token **top, char **envp, t_data *all)
 {
 	t_token	*curr;
+		t_token		*to_tmp;
+	char	*tmp;
 
+	tmp = NULL;
+	to_tmp = NULL;
 	curr = *top;
 	while(curr != NULL)
 	{
@@ -150,7 +170,7 @@ char *token_to_str(t_token **top)
 	return (lang_str);
 }
 
-//test:  gcc handle_dollar_sign.c find_env.c ../tokenized/token_util.c ../../libft/libft.a
+//test:  gcc handle_dollar_sign.c find_env.c ../tool/free_error.c ../tool/protection.c ../tool/tool_utils.c ../tokenized/token_util.c ../tokenized/split_token.c ../../libft/libft.a
 
 /* int main(int argc, char **argv, char **envp)
 {
@@ -166,7 +186,9 @@ char *token_to_str(t_token **top)
 	(void)argc;
 	//str = "hgjgh$dsf$sdfd$?$$$$$PATH";
 	//str = "$PATH $dsf $sdf d$?$$$$$";
-	str = "$PATH $$<< infile hgjgh$dsf$sdfd$?$$$$$";
+	str = "$PATH $$<< infile| hgj|gh$dsf$sdfd$?$$$$$";
+	//str = "echo adsfd\'\'afas\'$PATH\'";
+	str = "echo \'$PATH\'xchgfg";
 	new = new_token(str);
 	top = dollar_split(new->str);//
 	t_token *curr;

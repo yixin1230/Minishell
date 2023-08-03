@@ -63,7 +63,6 @@ void	add_redirection(t_data *all)
 	t_token *curr;
 	t_cmd	*cmd;
 
-
 	if (!all->cmd || !all->token)
 		return ;
 	curr = all->token;
@@ -191,7 +190,7 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 	char *str;
 	//str = "  c\'\"\' asdasda\"\'\">&| \"|\" dcd ";
 	//str = " <infile cmd  <infile arg arg>outfile| cmd1 aa a a a >1outfile|";
-	str = " cmd arg|sd|ad| asd";//ad don't have null after
+	str = " cmd arg|sd|ad| <asd";//ad don't have null after
 	//str = " \'asdas\"\'\"\"$PATH ADS $$ $chkhk df ";//have segmentation fault
 	//str = "  chkhk ";
 	//str = "  chkhk  \"HELLO -> \'\"";
@@ -216,29 +215,36 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 //complie:gcc create_cmd.c ../tool/free_error.c ../tool/tool_utils.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../env/find_env.c ../env/handle_dollar_sign.c ../../libft/libft.a
 //test3:add_redirection
 
-/* int main(int argc, char **argv, char **envp)
-{
-	t_data all;
-	char *str;
-	//str = "  c\'\"\' asdasda\"\'\">&| \"|\" dcd ";
-	str = " <infile cmd  <infile arg arg>outfile| cmd1 aa a a a >1outfile|";
-	//str = " cmd arg|";
-	//str = "  chkhk df ";//have segmentation fault
-	//str = "  chkhk  \"HELLO -> \'\";
-	all.input = str;
+// int main(int argc, char **argv, char **envp)
+// {
+// 	t_data all;
+// 	char *str;
+// 	//str = "  c\'\"\' asdasda\"\'\">&| \"|\" dcd ";
+// 	str = " <infile|jhj|>hih ";
+// 	//str = " cmd arg|";
+// 	//str = "  chkhk df ";//have segmentation fault
+// 	//str = "  chkhk  \"HELLO -> \'\";
+// 	all.input = str;
 
-	tokenized(&all, envp);
-	int len = cmd_len(&all.token, 0);
-	printf("len : %i \n",len);
-	token_to_cmd(&all);
-	t_token *curr = all.cmd->redi;
-	printf("%s ",curr->str);
-	int i =0;
-	while (curr != NULL)
-	{
-		i++;
-		printf("%s ",curr->str);
-		curr=curr->next;
-	} 
-	return 0;
-} */
+// 	tokenized(&all, envp);
+// 	int len = cmd_len(&all.token, 0);
+// 	token_to_cmd(&all);
+// 	t_cmd *curr_cmd = all.cmd;
+// 	while(curr_cmd)
+// 	{
+// 		t_token *curr = curr_cmd->redi;
+// 		int i = 0;
+// 		while (i < curr_cmd->len)
+// 		{
+// 			printf("str: %i: %s\n",i, curr_cmd->words[i]);
+// 			i++;
+// 		}
+// 		while (curr != NULL)
+// 		{
+// 			printf("redi: %s \n",curr->str);
+// 			curr=curr->next;
+// 		}
+// 		curr_cmd=curr_cmd->next;
+// 	}
+// 	return 0;
+// }
