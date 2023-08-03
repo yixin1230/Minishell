@@ -138,6 +138,6 @@ libft		obj		src		test_copy
 
 33.minishell-> echo 1231''afdsd'$PATH'"$PATH"               //loop forever //no problem now
 
-34.grep <Makefile c|grep e|grep $|wc
+34.grep <Makefile c|grep e|grep $|wc //fixed
       28      86    1017
 
