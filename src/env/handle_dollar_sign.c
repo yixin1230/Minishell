@@ -32,7 +32,10 @@ int	dollar_len(char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '$' || ft_isspace(str[i]) || str[i] == '\'' || str[i] == '\"')
+		if (str[i] == '$' || ft_isspace(str[i])
+			|| str[i] == '\'' || str[i] == '\"'
+			|| str[i] == '|'|| str[i] == '<'
+			|| str[i] == '>')
 			break ;
 		i++;
 	}
@@ -56,7 +59,7 @@ int	non_dollar_len(char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '$' || ft_isspace(str[i]) || str[i] == '\'' )
+		if (str[i] == '$' || ft_isspace(str[i]) || str[i] == '\'')
 			break ;
 		i++;
 	}
@@ -189,6 +192,7 @@ char *token_to_str(t_token **top)
 	str = "$PATH $$<< infile| hgj|gh$dsf$sdfd$?$$$$$";
 	str = "echo adsfd\'\'afas\'$PATH\'";
 	str = "echo \'$PATH\'xchgfg\"$PATH\"";
+	str = "grep <Makefile c|grep e|grep $|wc";
 	new = new_token(str);
 	top = dollar_split(new->str);//
 	t_token *curr;
