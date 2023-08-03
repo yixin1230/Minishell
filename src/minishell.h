@@ -144,7 +144,7 @@ void	redi_out(t_cmd *cmd, t_token *redi);
 void	redi_app(t_cmd *cmd, t_token *redi);
 void	add_redirection(t_data *all);
 void	do_redirection(t_cmd *cmd, t_data *all, char **envp);
-void	redi_here_doc(t_token *redi, t_data *all, char **envp);
+void	redi_here_doc(t_cmd *cmd, t_token *redi, t_data *all, char **envp);
 void	here_doc(int out, char *limiter,t_data *all, char **envp);
 
 //env

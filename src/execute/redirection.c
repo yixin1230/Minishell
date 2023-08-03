@@ -28,7 +28,7 @@ void	do_redirection(t_cmd *cmd, t_data *all, char **envp)
 		else if (redi->type == APPFILE)
 			redi_app(cmd, redi);
 		else if (redi->type == DELIMI)
-			redi_here_doc(redi, all, envp);
+			redi_here_doc(cmd, redi, all, envp);
 		if (!redi->next)
 			return ;
 		redi = redi->next;
@@ -43,7 +43,6 @@ void	redi_in(t_cmd *cmd, t_token *redi)
 	if (file < 0)
 		print_error(redi->str, 1);
 	cmd->fd_in = file;
-	//protect_dup2(file, 0);
 	//protect_close(file);
 }
 
@@ -55,7 +54,6 @@ void	redi_out(t_cmd *cmd, t_token *redi)
 	if(file < 0)
 		print_error(redi->str, 1);
 	cmd->fd_out = file;
-	//protect_dup2(file, 1);
 	//protect_close(file);
 }
 
@@ -67,6 +65,5 @@ void	redi_app(t_cmd *cmd, t_token *redi)
 	if (file < 0)
 		print_error(redi->str, 1);
 	cmd->fd_out = file;
-	//protect_dup2(file, 1);
 	//protect_close(file);
 }
