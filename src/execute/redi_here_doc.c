@@ -57,7 +57,7 @@ void	here_doc(int out, char *limiter,t_data *all, char **envp)
 		}
 		if (have_dollar(line))
 		{
-			to_tmp = dollar_split(line);
+			to_tmp = dollar_split(line, DQUO);
 			swap_val(&to_tmp, envp, all);
 			tmp = line;
 			line = token_to_str(&to_tmp);

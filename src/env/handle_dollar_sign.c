@@ -173,6 +173,11 @@ char *token_to_str(t_token **top)
 	return (lang_str);
 }
 
+void leaks(void)
+{
+	system("leaks -q");
+}
+
 //test:  gcc handle_dollar_sign.c find_env.c ../tool/free_error.c ../tool/protection.c ../tool/tool_utils.c ../tokenized/token_util.c ../tokenized/split_token.c ../../libft/libft.a
 
 /* int main(int argc, char **argv, char **envp)
@@ -187,17 +192,18 @@ char *token_to_str(t_token **top)
 
 	(void)argv;
 	(void)argc;
+	atexit(leaks);
 	//str = "hgjgh$dsf$sdfd$?$$$$$PATH";
 	//str = "$PATH $dsf $sdf d$?$$$$$";
 	str = "$PATH $$<< infile| hgj|gh$dsf$sdfd$?$$$$$";
 	str = "echo adsfd\'\'afas\'$PATH\'";
 	str = "echo \'$PATH\'xchgfg\"$PATH\"";
 	str = "grep <Makefile c|grep e|grep $|wc";
-	str = "\"$USER\'$USER\'\"";
-	str = "\'$USER\"$USER\"\'";
+	//str = "\"$USER\'$USER\'\"";
+	//str = "\'$USER\"$USER\"\'";
 	//str = "\"$USER\"\"\"\'\'\'$USER\'";
 	//str = "ASD$USER";
-	str = "ASDASD\'$USER\"$USER\"\'\'\'HASDOASDH\'$USER\'\"$USER\"";
+	//str = "ASDASD\'$USER\"$USER\"\'\'\'HASDOASDH\'$USER\'\"$USER\"";
 	new = new_token(str);
 	top = dollar_split(new->str, DQUO);//
 	t_token *curr;
@@ -218,4 +224,5 @@ char *token_to_str(t_token **top)
 	char *lang_str;
 	lang_str = token_to_str(&top);
 	printf("lang :%s\n",lang_str);
+	return (0);
 } */
