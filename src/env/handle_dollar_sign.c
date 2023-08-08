@@ -75,6 +75,7 @@ t_token *dollar_split(char *str, int quo)
 	int one_len;
 	char *line;
 	t_token	*top;
+	t_token	*new;
 	
 	i = 0;
 	top = NULL;
@@ -86,6 +87,8 @@ t_token *dollar_split(char *str, int quo)
 			i = split_with_quote(str, i, '\'', &top) - 1;
 		else if (str[i] == '\"' && quo == 0)
 			i = split_with_quote(str, i, '\"', &top) - 1;
+		else if (str[i] == '<')
+			i = split_redi(str, i, str[i], &top);
 		else if (str[i] == '$')
 		{
 			if (str[i + 1] && str[i + 1] == '$')
@@ -116,7 +119,9 @@ t_token *dollar_split(char *str, int quo)
 		{
 			one_len = space_len(&str[i]);
 			line = ft_substr(str, i, one_len);
-			add_token_end(&top, new_token(line));
+			new = new_token(line);
+			new->type = SPACE;
+			add_token_end(&top, new);
 			//printf("4,%s \n", line);
 			i += one_len;
 		}
@@ -133,7 +138,14 @@ void swap_val(t_token **top, char **envp, t_data *all)
 	curr = *top;
 	while(curr != NULL)
 	{
-		if (curr->str)
+		if (curr->type == HERE_DOC)
+		{
+			if (curr->next && curr->next->type != SPACE)
+				curr->next->type = DELIMI;
+			else if (curr->next && curr->next->type == SPACE && curr->next->next && curr->next->next->type != SPACE)
+				curr->next->next->type = DELIMI;
+		}
+		if (curr->str && curr->type != DELIMI)
 		{
 			if (ft_strcmp(curr->str, "$") == 0)
 				curr->str  = "$";
