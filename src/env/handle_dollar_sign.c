@@ -52,14 +52,16 @@ int	space_len(char *str)
 	return (i);
 }
 
-int	non_dollar_len(char *str)
+int	non_dollar_len(char *str, int quo)
 {
 	int	i;
 
 	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '$' || ft_isspace(str[i]) || str[i] == '\'')
+		if (str[i] == '$' || ft_isspace(str[i]))
+			break ;
+		if ((str[i] == '\'' || str[i] == '\"') && quo == 0)
 			break ;
 		i++;
 	}
@@ -67,7 +69,7 @@ int	non_dollar_len(char *str)
 	return (i);
 }
 
-t_token *dollar_split(char *str)
+t_token *dollar_split(char *str, int quo)
 {
 	int	i;
 	int one_len;
@@ -80,8 +82,10 @@ t_token *dollar_split(char *str)
 		return (new_token(NULL));
 	while (str[i])
 	{
-		if (str[i] == '\'')
+		if (str[i] == '\'' && quo == 0)
 			i = split_with_quote(str, i, '\'', &top) - 1;
+		else if (str[i] == '\"' && quo == 0)
+			i = split_with_quote(str, i, '\"', &top) - 1;
 		else if (str[i] == '$')
 		{
 			if (str[i + 1] && str[i + 1] == '$')
@@ -102,9 +106,9 @@ t_token *dollar_split(char *str)
 		}
 		else if(!ft_isspace(str[i]))
 		{
-			one_len = non_dollar_len(&str[i]);
+			one_len = non_dollar_len(&str[i], quo);
 			line = ft_substr(str, i, one_len);
-			add_token_end(&top, new_token(line));//segv
+			add_token_end(&top, new_token(line));
 			//printf("3,%s \n", line);
 			i += one_len;
 		}
@@ -112,7 +116,7 @@ t_token *dollar_split(char *str)
 		{
 			one_len = space_len(&str[i]);
 			line = ft_substr(str, i, one_len);
-			add_token_end(&top, new_token(line));//segv
+			add_token_end(&top, new_token(line));
 			//printf("4,%s \n", line);
 			i += one_len;
 		}
@@ -125,22 +129,18 @@ t_token *dollar_split(char *str)
 void swap_val(t_token **top, char **envp, t_data *all)
 {
 	t_token	*curr;
-		t_token		*to_tmp;
-	char	*tmp;
 
-	tmp = NULL;
-	to_tmp = NULL;
 	curr = *top;
 	while(curr != NULL)
 	{
 		if (curr->str)
 		{
 			if (ft_strcmp(curr->str, "$") == 0)
-				curr->str  = "$";//swap_str(curr->str, "$");//
+				curr->str  = "$";
 			else if (ft_strcmp(curr->str, "$$") == 0)
-				curr->str  = "id";//swap_str(curr->str, "id");//
+				curr->str  = "id";
 			else if (ft_strcmp(curr->str, "$?") == 0)
-				curr->str  = ft_itoa(all->status);//swap_str(curr->str, ft_itoa(all->status)); //
+				curr->str  = ft_itoa(all->status);
 			else if (curr->str[0] == '$' && curr->str[1] != '$')
 				curr->str  = find_env(&curr, envp);
 		}
@@ -193,8 +193,13 @@ char *token_to_str(t_token **top)
 	str = "echo adsfd\'\'afas\'$PATH\'";
 	str = "echo \'$PATH\'xchgfg\"$PATH\"";
 	str = "grep <Makefile c|grep e|grep $|wc";
+	str = "\"$USER\'$USER\'\"";
+	str = "\'$USER\"$USER\"\'";
+	//str = "\"$USER\"\"\"\'\'\'$USER\'";
+	//str = "ASD$USER";
+	str = "ASDASD\'$USER\"$USER\"\'\'\'HASDOASDH\'$USER\'\"$USER\"";
 	new = new_token(str);
-	top = dollar_split(new->str);//
+	top = dollar_split(new->str, DQUO);//
 	t_token *curr;
 	curr = top;
 	while (curr!= NULL)

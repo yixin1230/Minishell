@@ -20,6 +20,14 @@ void	print_error(char *str, int errcode)
 		ft_putstr_fd(": command not found\n", 2);
 		exit(errcode);
 	}
+	else if (errcode == 1)
+	{
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(strerror(errno), 2);
+		ft_putstr_fd("\n", 2);
+		exit(errcode);
+	}
 	else
 	{
 		ft_putstr_fd(str, 2);

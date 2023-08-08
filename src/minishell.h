@@ -40,6 +40,7 @@ enum type
 	DOLLAR,
 	ENV,
 	SQUO,
+	DQUO,
 	SPACES,
 };
 
@@ -104,9 +105,9 @@ int			split_char(char *str, int i, t_token **top, char c);
 void		check_token(t_data *all);
 int			space_len(char *str);
 int			split_general_char(char *str, int i, t_token **top);
-t_token		*split_again_token(char *str);
 int			split_with_quote(char *str, int i, char c, t_token **top);
 int			split_without_quote(char *str, int	i, char c, t_token **top);
+
 //cmd
 int		cmd_len(t_token **token, int index);
 void	add_cmd_end(t_cmd **top, t_cmd *new);
@@ -151,8 +152,9 @@ int		env_index(t_token *token, char **envp);
 char	*find_env(t_token **token, char **envp);
 
 //dollar
-t_token *dollar_split(char *str);
+t_token *dollar_split(char *str, int quo);
 int		dollar_len(char *str);
+int	non_dollar_len(char *str, int quo);
 int		have_dollar(char *str);
 int		space_len(char *str);
 void	swap_val(t_token **top, char **envp, t_data *all);
@@ -165,9 +167,9 @@ void ft_commands(char **envp, t_data *data);
 int	ft_isspace(char c);
 
 //pipe
-int	init_pipe(t_data *all, t_cmd *cmd, int **fd_2d);
-int	open_pipe(t_data *all);
 void	free_fd_2d(int **fd_2d);
-int	redi_loop(t_cmd **top, t_data *all, char **envp);
-int	close_all_fd(t_cmd **top);
+int		init_pipe(t_data *all, t_cmd *cmd, int **fd_2d);
+int		open_pipe(t_data *all);
+int		redi_loop(t_cmd **top, t_data *all, char **envp);
+int		close_all_fd(t_cmd **top);
 #endif

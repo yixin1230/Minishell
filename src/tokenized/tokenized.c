@@ -56,23 +56,37 @@ int quote_count(char *str, int i,int *quo_nb, char quo)
 	return (i);
 }
 
-t_token	*delspace_jointoken(t_token ** token)
+t_token	*delspace_jointoken(t_token ** token, char **envp, t_data *all)
 {
 	t_token	*curr;
 	t_token	*top;
 	t_token	*new;
 	char	*words;
+	char	*tmp;
+	t_token	*to_tmp;
 
 	curr = *token;
+	to_tmp = NULL;
+	tmp = NULL;
 	top = NULL;
 	words = NULL;
 	while(curr)
 	{
-		if (curr && (curr->type == WORD || curr->type == SQUO))
+		if (curr && (curr->type == WORD || curr->type == SQUO || curr->type == DQUO))
 		{
 			words = NULL;
-			while (curr && (curr->type == WORD || curr->type == SQUO))
+			while (curr && (curr->type == WORD || curr->type == SQUO || curr->type == DQUO))
 			{
+				if(curr->str && curr->type == DQUO)
+				{
+					to_tmp = dollar_split(curr->str, DQUO);
+					swap_val(&to_tmp, envp, all);
+					tmp = curr->str;
+					curr->str = token_to_str(&to_tmp);
+					free(tmp);
+					//curr->type == WORD;
+					//free_token(to_tmp);
+				}
 				if (!words)
 					words = ft_strdup(curr->str);
 				else
@@ -110,23 +124,23 @@ void	tokenized(t_data *all, char **envp)
 	if (quote_check(all->input) == 1)
 		exit (1);
 	to_tmp = NULL;
-	to_tmp = dollar_split(all->input);
+	to_tmp = dollar_split(all->input, 0);
 	swap_val(&to_tmp, envp, all);
 	all->input = token_to_str(&to_tmp);
 	to_tmp = split_token(all->input);
-	all->token = delspace_jointoken(&to_tmp);
+	all->token = delspace_jointoken(&to_tmp, envp, all);
 	curr = all->token;
 	while (curr != NULL)
 	{
-		if (curr->str && curr->prev && curr->prev->type == INPUT_RE && curr->type == WORD)
+		if (curr->str && curr->prev && curr->prev->type == INPUT_RE && (curr->type == WORD || curr->type == SQUO))
 			curr->type = INFILE;
-		else if (curr->str && curr->prev && curr->prev->type == OUTPUT_RE && curr->type == WORD)
+		else if (curr->str && curr->prev && curr->prev->type == OUTPUT_RE && (curr->type == WORD ||curr->type == SQUO))
 			curr->type = OUTFILE;
-		else if (curr->str && curr->prev && curr->prev->type == APPEND_RE && curr->type == WORD)
+		else if (curr->str && curr->prev && curr->prev->type == APPEND_RE && (curr->type == WORD ||curr->type == SQUO))
 			curr->type = APPFILE;
-		else if (curr->str && curr->prev && curr->prev->type == HERE_DOC && curr->type == WORD)
+		else if (curr->str && curr->prev && curr->prev->type == HERE_DOC && (curr->type == WORD ||curr->type == SQUO))
 			curr->type = DELIMI;
-		else if (curr->str && (curr->type == EMPTY || curr->type == SQUO))
+		else if (curr->str && (curr->type == EMPTY || curr->type == SQUO || curr->type == DQUO))
 			curr->type = WORD;
 		if (!curr->next)
 			return ;
@@ -162,12 +176,13 @@ void	tokenized(t_data *all, char **envp)
 	//all.input = " \"echo\" hello | wc";
 	//all.input = "<file1 cat > out \"|\" <infile "; //works 
 	all.input = " <infile>cmd >outfile | <infile";
+	all.input = "ASDASD\'$USER\"$USER\"\'\'\'HASDOASDH\'$USER\'\"$USER\"";
 	tokenized(&all, envp);
 	curr = all.token;
 	printf("test:%s\n", all.input);
 	 while (curr != NULL)
 	{
-		printf(" %i: type :%i :%s$\n", curr->index, curr->type , curr->str);
+		printf(" %i: type :%i :%s\n", curr->index, curr->type , curr->str);
 		curr = curr->next;
 	} 
 	return 0;

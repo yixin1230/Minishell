@@ -55,38 +55,6 @@ t_token	*split_token(char *str)
 	return (top);
 }
 
-t_token	*split_again_token(char *str)
-{
-		int	i;
-	int	len;
-	t_token	*top;
-	
-
-	i = 0;
-	len = 0;
-	top = NULL;
-	if (!str)
-		return (NULL);
-	while (str[i] && ft_isspace(str[i]))
-		i++;
-	while (str[i])
-	{
-		if (str[i] == '\'')
-			i = split_without_quote(str, i, '\'', &top);
-		else if (str[i] == '\"')
-			i = split_without_quote(str, i, '\"', &top);
-		else if (str[i] == '<' || str[i] == '>')
-			i = split_redi(str, i, str[i], &top);
-		else if (str[i] == '|')
-			i = split_char(str, i, &top, '|');
-		else if (!ft_isspace(str[i]) && str[i] != '|')
-			i = split_general_char(str, i, &top);
-		else
-			i++;
-	}
-	return (top);
-}
-
 int	split_general_char(char *str, int i, t_token **top)//not works yet
 {
 	int		len;
@@ -120,7 +88,7 @@ int	split_without_quote(char *str, int	i, char c, t_token **top)
 	if (c == '\'')
 		new->type = SQUO;
 	else
-		new->type = WORD;
+		new->type = DQUO;
 	add_token_end(top, new);
 	return (i);
 }
@@ -143,7 +111,7 @@ int	split_with_quote(char *str, int	i, char c, t_token **top)
 	if (c == '\'')
 		new->type = SQUO;
 	else
-		new->type = WORD;
+		new->type = DQUO;
 	add_token_end(top, new);
 	return (i);
 }

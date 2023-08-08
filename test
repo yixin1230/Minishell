@@ -141,3 +141,4 @@ libft		obj		src		test_copy
 34.grep <Makefile c|grep e|grep $|wc //fixed
       28      86    1017
 
+35.echo "$PATH'$PATH'"
