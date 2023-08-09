@@ -50,6 +50,7 @@ char	*find_path(char *cmd, char **envp)
 			free_2dstr(all_path);
 			return (path);
 		}
+		free(path);
 	}
 	free_2dstr(all_path);
 	return (NULL);

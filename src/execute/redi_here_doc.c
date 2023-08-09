@@ -17,22 +17,22 @@ int	redi_here_doc(t_cmd *cmd, t_token *redi, t_data *all, char **envp)
 	int		fd[2];
 	pid_t	id;
 (void)cmd;
-	protect_pipe(fd);
+	protect_pipe(fd, all);
 	id = fork();
 	if (id < 0)
-		print_error(NULL, 0);
+		print_error(NULL, 0, all);
 	if (id == 0)
 	{
-		protect_close(fd[0]);
+		protect_close(fd[0], all);
 		here_doc(fd[1], redi->str, all, envp);
-		protect_close(fd[1]);
+		protect_close(fd[1], all);
 	}
 	else
 	{
 		cmd->fd_in = dup(fd[0]);
-		protect_close(fd[0]);
-		protect_close(fd[1]);
-		protect_waitpid(id, NULL, 0);
+		protect_close(fd[0], all);
+		protect_close(fd[1], all);
+		protect_waitpid(id, NULL, 0, all);
 	}
 	return (cmd->fd_in);
 }
@@ -53,7 +53,7 @@ void	here_doc(int out, char *limiter,t_data *all, char **envp)
 			&& ft_strlen(limiter) == ft_strlen(line))
 		{
 			free(line);
-			protect_close(out);
+			protect_close(out, all);
 			exit(0);
 		}
 		if (have_dollar(line))
@@ -65,7 +65,7 @@ void	here_doc(int out, char *limiter,t_data *all, char **envp)
 			free(tmp);
 		}
 		line = ft_strjoin(line,"\n");
-		protect_write(out, line, ft_strlen(line));
+		protect_write(out, line, ft_strlen(line), all);
 		free(line);
 	}
 }

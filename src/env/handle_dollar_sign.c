@@ -134,8 +134,10 @@ t_token *dollar_split(char *str, int quo)
 void swap_val(t_token **top, char **envp, t_data *all)
 {
 	t_token	*curr;
+	char	*tmp;
 
 	curr = *top;
+	tmp = NULL;
 	while(curr != NULL)
 	{
 		if (curr->type == HERE_DOC)
@@ -148,13 +150,26 @@ void swap_val(t_token **top, char **envp, t_data *all)
 		if (curr->str && curr->type != DELIMI)
 		{
 			if (ft_strcmp(curr->str, "$") == 0)
-				curr->str  = "$";
+			{
+				free(curr->str);
+				curr->str  = ft_strdup("$");
+			}
 			else if (ft_strcmp(curr->str, "$$") == 0)
-				curr->str  = "id";
+			{
+				free(curr->str);
+				curr->str  = ft_strdup("id");
+			}
 			else if (ft_strcmp(curr->str, "$?") == 0)
+			{
+				free(curr->str);
 				curr->str  = ft_itoa(all->status);
+			}
 			else if (curr->str[0] == '$' && curr->str[1] != '$')
-				curr->str  = find_env(&curr, envp);
+			{
+				free(curr->str);
+				tmp = find_env(&curr, envp);
+				curr->str  = ft_strdup(tmp);
+			}
 		}
 		curr = curr->next;
 	}
@@ -164,11 +179,13 @@ char *token_to_str(t_token **top)
 {
 	t_token	*curr;
 	char	*lang_str;
+	char	*tmp;
 
 	if (!*top)
 		return (NULL);
 	curr = *top;
 	lang_str = NULL;
+	tmp = NULL;
 	while(curr != NULL)
 	{
 		if (curr->str)
@@ -176,18 +193,18 @@ char *token_to_str(t_token **top)
 			if (!lang_str)
 				lang_str = ft_strdup(curr->str);
 			else
+			{
+				tmp = lang_str;
 				lang_str = ft_strjoin(lang_str, curr->str);
+				free(tmp);
+			}
 		}
 		if (!curr->next)
 			break ;
 		curr = curr->next;
 	}
+	free_token(*top);
 	return (lang_str);
-}
-
-void leaks(void)
-{
-	system("leaks -q");
 }
 
 //test:  gcc handle_dollar_sign.c find_env.c ../tool/free_error.c ../tool/protection.c ../tool/tool_utils.c ../tokenized/token_util.c ../tokenized/split_token.c ../../libft/libft.a
@@ -197,7 +214,6 @@ void leaks(void)
 	int a;
 	char *str;
 	t_token *top = NULL;
-	t_token *new;
 	t_data all;
 	int i;
 	i = 0;
@@ -215,26 +231,13 @@ void leaks(void)
 	//str = "\'$USER\"$USER\"\'";
 	//str = "\"$USER\"\"\"\'\'\'$USER\'";
 	//str = "ASD$USER";
-	//str = "ASDASD\'$USER\"$USER\"\'\'\'HASDOASDH\'$USER\'\"$USER\"";
-	new = new_token(str);
-	top = dollar_split(new->str, DQUO);//
-	t_token *curr;
-	curr = top;
-	while (curr!= NULL)
-	{
-		printf("%s\n",curr->str);
-		curr = curr->next;
-	} 
+	str = "ASDASD\'$USER\"$USER\"\'\'\'HASDOASDH\'$USER\'\"$USER\"";
+	top = dollar_split(str, DQUO);//
 	swap_val(&top, envp, &all);//
  	printf("\n\n\n");
-	curr = top;
-	while (curr!= NULL)
-	{
-		printf("%s\n",curr->str);
-		curr = curr->next;
-	} 
 	char *lang_str;
 	lang_str = token_to_str(&top);
 	printf("lang :%s\n",lang_str);
+	free(lang_str);
 	return (0);
 } */

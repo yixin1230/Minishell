@@ -19,13 +19,13 @@ int	init_pipe(t_data *all, t_cmd *cmd, int **fd_2d)
 	fd_2d[cmd->index] = malloc(sizeof(int) * 2);
 	if (!fd_2d[cmd->index])
 		return (-1);
-	protect_pipe(fd_2d[cmd->index]);
+	protect_pipe(fd_2d[cmd->index], all);
 	if (cmd->index != 0)
 		cmd->fd_in = fd_2d[cmd->index - 1][0];
 	if (!cmd->next)
 	{
-		close(fd_2d[cmd->index][0]);
-		close(fd_2d[cmd->index][1]);
+		protect_close(fd_2d[cmd->index][0], all);
+		protect_close(fd_2d[cmd->index][1], all);
 	}
 	else
 		cmd->fd_out = fd_2d[cmd->index][1];

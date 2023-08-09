@@ -32,7 +32,7 @@ void	token_to_cmd(t_data *all)
 			len = cmd_len(&curr, curr->index);
 			words = malloc(sizeof(char *) * len);
 			if (!words)
-				print_error(NULL, 0);
+				print_error(NULL, 0, all);
 			words[len - 1] = NULL;
 			while (curr->type != PIPE && curr != NULL && i < len)
 			{
@@ -115,13 +115,13 @@ t_cmd	*new_cmd(char **words, int len)
 	new = malloc(sizeof(t_cmd));
 	if (!new)
 		return (NULL);
-	new->words = words;
 	new->next = NULL;
-	new->len = len;
 	new->redi = NULL;
-	new->index = 0;
+	new->words = words;
+	new->len = len;
 	new->fd_in = tmp_in;
 	new->fd_out = tmp_out;
+	new->index = 0;
 	return (new);
 }
 

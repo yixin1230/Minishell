@@ -118,29 +118,30 @@ t_cmd	*ft_new_cmd(void);
 //run
 char	*find_path(char *cmd, char **envp);
 int		path_index(char **envp);
-void	run_cmd(t_cmd *cmd, char **envp);
+void	run_cmd(t_cmd *cmd, char **envp, t_data *all);
 
 //child
 void	cmd_child(t_cmd *cmd, char **envp, t_data *all);
 
 //free and print error : cmd && token && str
-void	print_error(char *str, int errcode);
+void	print_error(char *str, int errcode, t_data *all);
 void	free_2dstr(char **str);
 void	free_token(t_token *token);
 void	free_cmd(t_data *all);
+void	free_all(t_data *all);
 
 //protect
-void	protect_waitpid(pid_t id, int *status, int options);
-void	protect_dup2(int file, int file2);
-void	protect_close(int file);
-void	protect_write(int fd, char *buf, int count);
-void	protect_pipe(int fd[2]);
+void	protect_waitpid(pid_t id, int *status, int options, t_data *all);
+void	protect_dup2(int file, int file2, t_data *all);
+void	protect_close(int file, t_data *all);
+void	protect_write(int fd, char *buf, int count, t_data *all);
+void	protect_pipe(int fd[2], t_data *all);
 //void	protect_open(int fd[2]);
 
 //redi
-int		redi_in(t_cmd *cmd, t_token *redi);
-int		redi_out(t_cmd *cmd, t_token *redi);
-int		redi_app(t_cmd *cmd, t_token *redi);
+int		redi_in(t_cmd *cmd, t_token *redi, t_data *all);
+int		redi_out(t_cmd *cmd, t_token *redi, t_data *all);
+int		redi_app(t_cmd *cmd, t_token *redi, t_data *all);
 int		redi_here_doc(t_cmd *cmd, t_token *redi, t_data *all, char **envp);
 void	add_redirection(t_data *all);
 void	do_redirection(t_cmd *cmd, t_data *all, char **envp);
@@ -171,7 +172,7 @@ void	free_fd_2d(int **fd_2d);
 int		init_pipe(t_data *all, t_cmd *cmd, int **fd_2d);
 int		open_pipe(t_data *all);
 int		redi_loop(t_cmd **top, t_data *all, char **envp);
-int		close_all_fd(t_cmd **top);
+int		close_all_fd(t_cmd **top, t_data *all);
 
 void leaks(void);
 #endif

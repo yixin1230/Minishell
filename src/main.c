@@ -12,7 +12,10 @@
 
 #include "minishell.h"
 
-
+void leaks(void)
+{
+	system("leaks -q minishell");
+}
 
 int main(int argc, char **argv, char **envp)
 {
@@ -21,13 +24,18 @@ int main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	all.envp = envp;
+	//atexit(leaks);
 	while (1)
 	{
+		all.cmd = NULL;
+		all.token = NULL;
+		all.id = NULL;
 		all.input = readline("minishell-> ");
 		add_history(all.input);
 		//create_history(&all);
 		ft_commands(envp, &all);
-		free(all.input);
+		free_all(&all);
+		//exit(0);//test leaks
 	}
 	return (0);
 }

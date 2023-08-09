@@ -84,13 +84,15 @@ t_token	*delspace_jointoken(t_token ** token, char **envp, t_data *all)
 					tmp = curr->str;
 					curr->str = token_to_str(&to_tmp);
 					free(tmp);
-					//curr->type == WORD;
-					//free_token(to_tmp);
 				}
 				if (!words)
 					words = ft_strdup(curr->str);
 				else
+				{
+					tmp = words;
 					words = ft_strjoin(words, curr->str);
+					free(tmp);
+				}
 				if (!curr->next || (curr->next && (curr->next->type == SPACES
 					|| curr->next->type == PIPE || curr->next->type == INPUT_RE
 					|| curr->next->type == OUTPUT_RE || curr->next->type == HERE_DOC
@@ -111,7 +113,7 @@ t_token	*delspace_jointoken(t_token ** token, char **envp, t_data *all)
 			break ;
 		curr = curr->next;
 	}
-	//free_token(curr);
+	free_token(*token);
 	return (top);
 }
 
@@ -157,6 +159,7 @@ void	tokenized(t_data *all, char **envp)
 	t_data	all;
 	char *str;
 
+	atexit(leaks);
 	all.cmd =NULL;
 	all.history =NULL;
 	(void)argc;
@@ -169,14 +172,14 @@ void	tokenized(t_data *all, char **envp)
 	//all.input = "cat <file1 cat > out | <ls| <file cmd"; //break pipe
 	all.input = " \'$PATH\' $$<< in|fi\'\'le   	  hgjgh$dsf$sdfd$?$$$$$ <infile cmd arg>outfile | cmd1 aa a a a >1outfile|";//$$ error
 	//all.input = " $PATH ADS  $sdf $ df hgjgh$dsf$sdfd$?$$$$$";
-	all.input = " $PATH ";
+	//all.input = " $PATH ";
 	//all.input = "ls|wc";
 	//all.input = "||\"|\"cmd "; //break pipe
 	//all.input = " echo adfds''fdas\'$PATH\'SDGF";
 	//all.input = " \"echo\" hello | wc";
 	//all.input = "<file1 cat > out \"|\" <infile "; //works 
-	all.input = " <infile>cmd >outfile | <infile";
-	all.input = "ASDASD\'$USER\"$USER\"\'\'\'HASDOASDH\'$USER\'\"$USER\"";
+	//all.input = " <infile>cmd >outfile | <infile";
+	//all.input = "ASDASD\'$USER\"$USER\"\'\'\'HASDOASDH\'$USER\'\"$USER\"";
 	tokenized(&all, envp);
 	curr = all.token;
 	printf("test:%s\n", all.input);
@@ -184,6 +187,7 @@ void	tokenized(t_data *all, char **envp)
 	{
 		printf(" %i: type :%i :%s\n", curr->index, curr->type , curr->str);
 		curr = curr->next;
-	} 
+	}
+	exit(0);
 	return 0;
 } */

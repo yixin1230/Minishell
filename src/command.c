@@ -18,17 +18,13 @@ void ft_commands(char **envp, t_data *all)
 	int		i;
 
 	i = 0;
-	if (ft_strcmp(all->input, "exit") == 0)
-		exit(0);
-	//else if (ft_strcmp(all->input, "history") == 0)
-	//	printf_history(all->history);
-	else if (ft_strcmp(all->input, "") != 0)
+	if (ft_strcmp(all->input, "") != 0)
 	{
 		tokenized(all, envp);
 		token_to_cmd(all);
 		free_token(all->token);
+		all->token = NULL;
 		open_pipe(all);
-		//redi_loop(&all->cmd, all, envp);
 		all->id = malloc(sizeof(pid_t) * all->cmd_len);
 		if (!all->id)
 			return ;
@@ -40,15 +36,15 @@ void ft_commands(char **envp, t_data *all)
 				break ;
 			curr = curr->next;
 		}
-		close_all_fd(&all->cmd);
+		close_all_fd(&all->cmd, all);
 		while (i < all->cmd_len)
 		{
-			protect_waitpid(all->id[i], &all->status, 0);
+			protect_waitpid(all->id[i], &all->status, 0, all);
 			if (WEXITSTATUS(all->status))
 				all->status = WEXITSTATUS(all->status);
 			i++;
 		}
-		free_cmd(all);
+		//free_all(all);
 	}
 }
 
@@ -67,7 +63,7 @@ int	redi_loop(t_cmd **top, t_data *all, char **envp)
 	return (0);
 }
 
-int	close_all_fd(t_cmd **top)
+int	close_all_fd(t_cmd **top, t_data *all)
 {
 	t_cmd	*curr;
 
@@ -75,9 +71,9 @@ int	close_all_fd(t_cmd **top)
 	while (curr)
 	{
 		if (curr->fd_in != 0)
-			protect_close(curr->fd_in);
+			protect_close(curr->fd_in, all);
 		if (curr->fd_out != 1)
-			protect_close(curr->fd_out);
+			protect_close(curr->fd_out, all);
 		if (!curr->next)
 			return (0);
 		curr = curr->next;

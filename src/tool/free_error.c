@@ -12,12 +12,13 @@
 
 #include "../minishell.h"
 
-void	print_error(char *str, int errcode)
+void	print_error(char *str, int errcode, t_data *all)
 {
 	if (errcode == 127)
 	{
 		ft_putstr_fd(str, 2);
 		ft_putstr_fd(": command not found\n", 2);
+		free_all(all);
 		exit(errcode);
 	}
 	else if (errcode == 1 || errcode == 126)
@@ -26,6 +27,7 @@ void	print_error(char *str, int errcode)
 		ft_putstr_fd(": ", 2);
 		ft_putstr_fd(strerror(errno), 2);
 		ft_putstr_fd("\n", 2);
+		free_all(all);
 		exit(errcode);
 	}
 	else
@@ -34,6 +36,7 @@ void	print_error(char *str, int errcode)
 		ft_putstr_fd(": ", 2);
 		ft_putstr_fd(strerror(errno), 2);
 		ft_putstr_fd("\n", 2);
+		free_all(all);
 		exit(errno);
 	}
 }
@@ -67,10 +70,16 @@ void	free_token(t_token *token)
 		tmp = token;
 		if(tmp->str)
 			free(tmp->str);
-		free(tmp);
-		if (!token->next)
+		if (token->next)
+		{
+			token = token->next;
+			free(tmp);
+		}
+		else
+		{
+			free(tmp);
 			return ;
-		token = token->next;
+		}
 	}
 }
 
@@ -83,11 +92,27 @@ void	 free_cmd(t_data *all)
 		tmp = all->cmd;
 		free_2dstr(tmp->words);
 		free_token(tmp->redi);
-		free(tmp);
-		if (!all->cmd->next)
+		if (all->cmd->next)
+		{
+			all->cmd = all->cmd->next;
+			free(tmp);
+		}
+		else
+		{
+			free(tmp);
 			return ;
-		all->cmd = all->cmd->next;
+		}
 	}
 }
 
-//free_history
+void	free_all(t_data *all)
+{
+	if (all->cmd)
+		free_cmd(all);
+	if (all->token)
+		free_token(all->token);
+	if (all->input)
+		free(all->input);
+	if (all->id)
+		free(all->id);
+}

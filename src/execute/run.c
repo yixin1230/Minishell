@@ -13,7 +13,7 @@
 
 #include "../minishell.h"
 
-void	run_cmd(t_cmd *cmd, char **envp)
+void	run_cmd(t_cmd *cmd, char **envp, t_data *all)
 {
 	char *path;
 	
@@ -29,11 +29,16 @@ void	run_cmd(t_cmd *cmd, char **envp)
 	else
 		path = find_path(cmd->words[0], envp);
 	if (!path)
-		print_error(cmd->words[0], 127);
+		print_error(cmd->words[0], 127, all);
 	else if (access(path, X_OK) != 0)
-		print_error(cmd->words[0], 126);
+		print_error(cmd->words[0], 126, all);
 	else if (execve(path, cmd->words, envp) == -1)
-		print_error(cmd->words[0], 0);
+	{
+		free(path);
+		print_error(cmd->words[0], 0, all);
+	}
+	else
+		free(path);
 }
 
 void	cmd_child(t_cmd *cmd, char **envp, t_data *all)
@@ -45,11 +50,11 @@ void	cmd_child(t_cmd *cmd, char **envp, t_data *all)
 	{
 		do_redirection(cmd, all, envp);
 		if (cmd->fd_in != 0)
-			protect_dup2(cmd->fd_in, 0);
+			protect_dup2(cmd->fd_in, 0, all);
 		if (cmd->fd_out != 1)
-			protect_dup2(cmd->fd_out, 1);
-		close_all_fd(&all->cmd);
-		run_cmd(cmd, envp);
+			protect_dup2(cmd->fd_out, 1, all);
+		close_all_fd(&all->cmd, all);
+		run_cmd(cmd, envp, all);
 		exit(0);
 	}
 }
