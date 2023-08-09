@@ -14,15 +14,16 @@ NAME		= minishell
 LIBFT		= ./libft/libft.a
 CC			= gcc
 CFLAGS		= -Werror -Wall -Wextra -g
-Include	= -lreadline
+Include		= -lreadline
 
 SRC			= ./src/main.c \
 				./src/display_prompt.c \
 				./src/command.c \
-				./src/create_history.c \
 				./src/tokenized/split_token.c\
 				./src/tokenized/token_util.c \
 				./src/tokenized/tokenized.c\
+				./src/tokenized/split_token_utils.c\
+				./src/tokenized/quote_utils.c\
 				./src/execute/run.c\
 				./src/execute/create_cmd.c\
 				./src/execute/find_path.c\
@@ -38,10 +39,8 @@ SRC			= ./src/main.c \
 				
 OBJ			= $(SRC:.c=.o)
 
-# Object Directory
 OBJDIR 		= obj
 
-# Colors
 BOLD		= \033[1m
 ITALIC		= \033[3m
 UNDER 		= \033[4m
@@ -50,7 +49,6 @@ INDIGO		= \033[38;2;75;0;130m
 CORAL		= \033[38;2;255;127;80m
 RESET		= \033[0m
 
-# Targets
 all:		$(NAME)
 
 $(NAME): $(LIBFT) $(OBJ)

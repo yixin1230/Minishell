@@ -74,8 +74,8 @@ char	*ft_strncat(char *dest, char *src, unsigned int nb)
 	}
 	while (src[i] != '\0' && i < nb)
 	{
-			dest[k + i] = src[i];
-			i++;
+		dest[k + i] = src[i];
+		i++;
 	}
 	dest[k + i] = '\0';
 	return (dest);

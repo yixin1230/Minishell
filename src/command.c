@@ -12,10 +12,9 @@
 
 #include "minishell.h"
 
-void ft_commands(char **envp, t_data *all)
+void	ft_commands(char **envp, t_data *all)
 {
-	t_cmd	*curr;
-	int		i;
+	int	i;
 
 	i = 0;
 	if (ft_strcmp(all->input, "") != 0)
@@ -28,14 +27,7 @@ void ft_commands(char **envp, t_data *all)
 		all->id = malloc(sizeof(pid_t) * all->cmd_len);
 		if (!all->id)
 			return ;
-		curr = all->cmd;
-		while (curr)
-		{
-			cmd_child(curr, envp, all);
-			if (!curr->next)
-				break ;
-			curr = curr->next;
-		}
+		fork_loop(all, envp);
 		close_all_fd(&all->cmd, all);
 		while (i < all->cmd_len)
 		{
@@ -44,6 +36,20 @@ void ft_commands(char **envp, t_data *all)
 				all->status = WEXITSTATUS(all->status);
 			i++;
 		}
+	}
+}
+
+void	fork_loop(t_data *all, char **envp)
+{
+	t_cmd	*curr;
+
+	curr = all->cmd;
+	while (curr)
+	{
+		cmd_child(curr, envp, all);
+		if (!curr->next)
+			break ;
+		curr = curr->next;
 	}
 }
 

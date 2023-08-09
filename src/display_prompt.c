@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void    display_prompt()
+void	display_prompt()
 {
-    printf("minishell ➔  ");
+	printf("minishell ➔  ");
 }

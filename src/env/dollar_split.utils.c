@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/09 15:14:34 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/08/09 15:52:30 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/08/09 16:30:51 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,3 +88,4 @@ int	dollar_split_nondollar(char *str, int i, t_token **top, int quo)
 	i += one_len;
 	return (i);
 }
+
