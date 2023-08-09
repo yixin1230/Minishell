@@ -107,6 +107,8 @@ int			space_len(char *str);
 int			split_general_char(char *str, int i, t_token **top);
 int			split_with_quote(char *str, int i, char c, t_token **top);
 int			split_without_quote(char *str, int	i, char c, t_token **top);
+int			split_spaces_char(char *str, int i, t_token **top);
+int	dollar_split_dollar(char *str, int i, t_token **top);
 
 //cmd
 int		cmd_len(t_token **token, int index);
@@ -136,7 +138,6 @@ void	protect_dup2(int file, int file2, t_data *all);
 void	protect_close(int file, t_data *all);
 void	protect_write(int fd, char *buf, int count, t_data *all);
 void	protect_pipe(int fd[2], t_data *all);
-//void	protect_open(int fd[2]);
 
 //redi
 int		redi_in(t_cmd *cmd, t_token *redi, t_data *all);
@@ -155,11 +156,14 @@ char	*find_env(t_token **token, char **envp);
 //dollar
 t_token *dollar_split(char *str, int quo);
 int		dollar_len(char *str);
-int	non_dollar_len(char *str, int quo);
+int		non_dollar_len(char *str, int quo);
 int		have_dollar(char *str);
 int		space_len(char *str);
 void	swap_val(t_token **top, char **envp, t_data *all);
 char	*token_to_str(t_token **top);
+void	dollar_swap_val(t_token **curr, char **envp, t_data *all);
+char	*add_str_to_strend(char *lang_str, char *str);
+int		dollar_split_nondollar(char *str, int i, t_token **top, int quo);
 
 //void free_history(t_history *history); //
 void ft_commands(char **envp, t_data *data);

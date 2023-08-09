@@ -21,33 +21,15 @@ void	print_error(char *str, int errcode, t_data *all)
 		free_all(all);
 		exit(errcode);
 	}
-	else if (errcode == 1 || errcode == 126)
-	{
-		ft_putstr_fd(str, 2);
-		ft_putstr_fd(": ", 2);
-		ft_putstr_fd(strerror(errno), 2);
-		ft_putstr_fd("\n", 2);
-		free_all(all);
-		exit(errcode);
-	}
-	else
-	{
-		ft_putstr_fd(str, 2);
-		ft_putstr_fd(": ", 2);
-		ft_putstr_fd(strerror(errno), 2);
-		ft_putstr_fd("\n", 2);
-		free_all(all);
-		exit(errno);
-	}
-}
-
-int	print_error_noexit(char *str)
-{
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd(": ", 2);
 	ft_putstr_fd(strerror(errno), 2);
 	ft_putstr_fd("\n", 2);
-	return(errno);
+	free_all(all);
+	if (errcode == 1 || errcode == 126)
+		exit(errcode);
+	else
+		exit(errno);
 }
 
 void	free_2dstr(char **str)
@@ -65,10 +47,10 @@ void	free_token(t_token *token)
 {
 	t_token	*tmp;
 
-	while(token != NULL)
+	while (token != NULL)
 	{
 		tmp = token;
-		if(tmp->str)
+		if (tmp->str)
 			free(tmp->str);
 		if (token->next)
 		{
@@ -83,11 +65,11 @@ void	free_token(t_token *token)
 	}
 }
 
-void	 free_cmd(t_data *all)
+void	free_cmd(t_data *all)
 {
 	t_cmd	*tmp;
 
-	while(all->cmd != NULL)
+	while (all->cmd != NULL)
 	{
 		tmp = all->cmd;
 		free_2dstr(tmp->words);

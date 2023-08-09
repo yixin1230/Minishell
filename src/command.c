@@ -44,7 +44,6 @@ void ft_commands(char **envp, t_data *all)
 				all->status = WEXITSTATUS(all->status);
 			i++;
 		}
-		//free_all(all);
 	}
 }
 

@@ -15,15 +15,10 @@
 t_token	*split_token(char *str)
 {
 	int	i;
-	int	len;
-	char	*line;
-	t_token	*new;
 	t_token	*top;
-	
 
 	i = 0;
-	len = 0;
-	top = NULL;
+	top =NULL;
 	if (!str)
 		return (NULL);
 	while (str[i] && ft_isspace(str[i]))
@@ -41,18 +36,24 @@ t_token	*split_token(char *str)
 		else if (!ft_isspace(str[i]) && str[i] != '\"' && str[i] != '\''&& str[i] != '|')
 			i = split_general_char(str, i, &top);
 		else if (ft_isspace(str[i]))
-		{
-			len = space_len(&str[i]);
-			line = ft_substr(str, i, len);
-			new = new_token(line);
-			new->type = SPACES;
-			add_token_end(&top, new);
-			i = len + i;
-		}
-		// else
-		// 	i++;
+			i = split_spaces_char(str, i, &top);
 	}
 	return (top);
+}
+
+int	split_spaces_char(char *str, int i, t_token **top)
+{
+	int		len;
+	char	*line;
+	t_token	*new;
+
+	len = space_len(&str[i]);
+	line = ft_substr(str, i, len);
+	new = new_token(line);
+	new->type = SPACES;
+	add_token_end(top, new);
+	i += len;
+	return (i);
 }
 
 int	split_general_char(char *str, int i, t_token **top)//not works yet

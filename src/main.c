@@ -32,7 +32,6 @@ int main(int argc, char **argv, char **envp)
 		all.id = NULL;
 		all.input = readline("minishell-> ");
 		add_history(all.input);
-		//create_history(&all);
 		ft_commands(envp, &all);
 		free_all(&all);
 		//exit(0);//test leaks
