@@ -12,71 +12,11 @@
 
 #include "../minishell.h"
 
-int	have_dollar(char *str)
+t_token	*dollar_split(char *str, int quo)
 {
-	int	i;
-
-	i = -1;
-	while (str[++i])
-	{
-		if (str[i] == '$')
-			return (1);
-	}
-	return (0);
-}
-
-int	dollar_len(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '$' || ft_isspace(str[i])
-			|| str[i] == '\'' || str[i] == '\"'
-			|| str[i] == '|'|| str[i] == '<'
-			|| str[i] == '>')
-			break ;
-		i++;
-	}
-	return (i);
-}
-
-int	space_len(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] && ft_isspace(str[i]))
-		i++;
-	return (i);
-}
-
-int	non_dollar_len(char *str, int quo)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '$' || ft_isspace(str[i]))
-			break ;
-		if ((str[i] == '\'' || str[i] == '\"') && quo == 0)
-			break ;
-		i++;
-	}
-		
-	return (i);
-}
-
-t_token *dollar_split(char *str, int quo)
-{
-	int	i;
-	int one_len;
-	char *line;
+	int		i;
 	t_token	*top;
-	t_token	*new;
-	
+
 	i = 0;
 	top = NULL;
 	if (!str)
@@ -90,115 +30,53 @@ t_token *dollar_split(char *str, int quo)
 		else if (str[i] == '<')
 			i = split_redi(str, i, str[i], &top);
 		else if (str[i] == '$')
-		{
-			if (str[i + 1] && str[i + 1] == '$')
-			{
-				line = ft_substr(str, i, 2);
-				add_token_end(&top, new_token(line));
-				//printf("2,%s \n", line);
-				i += 2;
-			}
-			else
-			{
-				one_len = dollar_len(&str[i + 1]) + 1;
-				line = ft_substr(str, i, one_len);
-				add_token_end(&top, new_token(line));
-				//printf("1,%s \n", line);
-				i += one_len;
-			}
-		}
-		else if(!ft_isspace(str[i]))
-		{
-			one_len = non_dollar_len(&str[i], quo);
-			line = ft_substr(str, i, one_len);
-			add_token_end(&top, new_token(line));
-			//printf("3,%s \n", line);
-			i += one_len;
-		}
-		else if(ft_isspace(str[i]))
-		{
-			one_len = space_len(&str[i]);
-			line = ft_substr(str, i, one_len);
-			new = new_token(line);
-			new->type = SPACES;
-			add_token_end(&top, new);
-			//printf("4,%s \n", line);
-			i += one_len;
-		}
+			i = dollar_split_dollar(str, i, &top);
+		else if (!ft_isspace(str[i]))
+			i = dollar_split_nondollar(str, i, &top, quo);
+		else if (ft_isspace(str[i]))
+			i = split_spaces_char(str, i, &top);
 		else
 			i++;
 	}
 	return (top);
 }
 
-void swap_val(t_token **top, char **envp, t_data *all)
+void	swap_val(t_token **top, char **envp, t_data *all)
 {
 	t_token	*curr;
 	char	*tmp;
 
 	curr = *top;
 	tmp = NULL;
-	while(curr != NULL)
+	while (curr != NULL)
 	{
 		if (curr->type == HERE_DOC)
 		{
 			if (curr->next && curr->next->type != SPACES)
 				curr->next->type = DELIMI;
-			else if (curr->next && curr->next->type == SPACES && curr->next->next && curr->next->next->type != SPACES)
+			else if (curr->next && curr->next->type == SPACES
+				&& curr->next->next && curr->next->next->type != SPACES)
 				curr->next->next->type = DELIMI;
 		}
 		if (curr->str && curr->type != DELIMI)
-		{
-			if (ft_strcmp(curr->str, "$") == 0)
-			{
-				free(curr->str);
-				curr->str  = ft_strdup("$");
-			}
-			else if (ft_strcmp(curr->str, "$$") == 0)
-			{
-				free(curr->str);
-				curr->str  = ft_strdup("id");
-			}
-			else if (ft_strcmp(curr->str, "$?") == 0)
-			{
-				free(curr->str);
-				curr->str  = ft_itoa(all->status);
-			}
-			else if (curr->str[0] == '$' && curr->str[1] != '$')
-			{
-				free(curr->str);
-				tmp = find_env(&curr, envp);
-				curr->str  = ft_strdup(tmp);
-			}
-		}
+			dollar_swap_val(&curr, envp, all);
 		curr = curr->next;
 	}
 }
 
-char *token_to_str(t_token **top)
+char	*token_to_str(t_token **top)
 {
 	t_token	*curr;
 	char	*lang_str;
-	char	*tmp;
 
 	if (!*top)
 		return (NULL);
 	curr = *top;
 	lang_str = NULL;
-	tmp = NULL;
-	while(curr != NULL)
+	while (curr != NULL)
 	{
 		if (curr->str)
-		{
-			if (!lang_str)
-				lang_str = ft_strdup(curr->str);
-			else
-			{
-				tmp = lang_str;
-				lang_str = ft_strjoin(lang_str, curr->str);
-				free(tmp);
-			}
-		}
+			lang_str = add_str_to_strend(lang_str, curr->str);
 		if (!curr->next)
 			break ;
 		curr = curr->next;
