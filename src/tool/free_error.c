@@ -20,7 +20,7 @@ void	print_error(char *str, int errcode)
 		ft_putstr_fd(": command not found\n", 2);
 		exit(errcode);
 	}
-	else if (errcode == 1)
+	else if (errcode == 1 || errcode == 126)
 	{
 		ft_putstr_fd(str, 2);
 		ft_putstr_fd(": ", 2);

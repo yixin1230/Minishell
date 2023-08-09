@@ -24,10 +24,14 @@ void	run_cmd(t_cmd *cmd, char **envp)
 	}
 	if (access(cmd->words[0], F_OK) == 0)
 		path = cmd->words[0];
+	else if (access(path, X_OK) == 0)
+		path = cmd->words[0];
 	else
 		path = find_path(cmd->words[0], envp);
 	if (!path)
 		print_error(cmd->words[0], 127);
+	else if (access(path, X_OK) != 0)
+		print_error(cmd->words[0], 126);
 	else if (execve(path, cmd->words, envp) == -1)
 		print_error(cmd->words[0], 0);
 }

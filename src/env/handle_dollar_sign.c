@@ -120,7 +120,7 @@ t_token *dollar_split(char *str, int quo)
 			one_len = space_len(&str[i]);
 			line = ft_substr(str, i, one_len);
 			new = new_token(line);
-			new->type = SPACE;
+			new->type = SPACES;
 			add_token_end(&top, new);
 			//printf("4,%s \n", line);
 			i += one_len;
@@ -140,9 +140,9 @@ void swap_val(t_token **top, char **envp, t_data *all)
 	{
 		if (curr->type == HERE_DOC)
 		{
-			if (curr->next && curr->next->type != SPACE)
+			if (curr->next && curr->next->type != SPACES)
 				curr->next->type = DELIMI;
-			else if (curr->next && curr->next->type == SPACE && curr->next->next && curr->next->next->type != SPACE)
+			else if (curr->next && curr->next->type == SPACES && curr->next->next && curr->next->next->type != SPACES)
 				curr->next->next->type = DELIMI;
 		}
 		if (curr->str && curr->type != DELIMI)
