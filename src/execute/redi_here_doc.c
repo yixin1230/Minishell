@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-void	redi_here_doc(t_cmd *cmd, t_token *redi, t_data *all, char **envp)
+int	redi_here_doc(t_cmd *cmd, t_token *redi, t_data *all, char **envp)
 {
 	int		fd[2];
 	pid_t	id;
@@ -34,6 +34,7 @@ void	redi_here_doc(t_cmd *cmd, t_token *redi, t_data *all, char **envp)
 		protect_close(fd[1]);
 		protect_waitpid(id, NULL, 0);
 	}
+	return (cmd->fd_in);
 }
 
 void	here_doc(int out, char *limiter,t_data *all, char **envp)

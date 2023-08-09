@@ -17,25 +17,45 @@
 void	do_redirection(t_cmd *cmd, t_data *all, char **envp)
 {
 	t_token	*redi;
+	int		in;
+	int		out;
 
 	redi = cmd->redi;
+	in = 0;
+	out = 0;
 	while(redi)
 	{
 		if(redi->type == INFILE)
-			redi_in(cmd, redi);
+		{
+			if (in != 0)
+				close(in);
+			in = redi_in(cmd, redi);
+		}
 		else if (redi->type == OUTFILE)
-			redi_out(cmd, redi);
+		{
+			if (out != 0)
+				close(out);
+			out = redi_out(cmd, redi);
+		}
 		else if (redi->type == APPFILE)
+		{
+			if (out != 0)
+				close(out);
 			redi_app(cmd, redi);
+		}
 		else if (redi->type == DELIMI)
+		{
+			if (in != 0)
+				close(in);
 			redi_here_doc(cmd, redi, all, envp);
+		}
 		if (!redi->next)
 			return ;
 		redi = redi->next;
 	}
 }
 
-void	redi_in(t_cmd *cmd, t_token *redi)
+int	redi_in(t_cmd *cmd, t_token *redi)
 {
 	int	file;
 	
@@ -43,10 +63,10 @@ void	redi_in(t_cmd *cmd, t_token *redi)
 	if (file < 0)
 		print_error(redi->str, 1);
 	cmd->fd_in = file;
-	//protect_close(file);
+	return (file);
 }
 
-void	redi_out(t_cmd *cmd, t_token *redi)
+int	redi_out(t_cmd *cmd, t_token *redi)
 {
 	int	file;
 	
@@ -54,10 +74,10 @@ void	redi_out(t_cmd *cmd, t_token *redi)
 	if(file < 0)
 		print_error(redi->str, 1);
 	cmd->fd_out = file;
-	//protect_close(file);
+	return (file);
 }
 
-void	redi_app(t_cmd *cmd, t_token *redi)
+int	redi_app(t_cmd *cmd, t_token *redi)
 {
 	int	file;
 	
@@ -65,5 +85,5 @@ void	redi_app(t_cmd *cmd, t_token *redi)
 	if (file < 0)
 		print_error(redi->str, 1);
 	cmd->fd_out = file;
-	//protect_close(file);
+	return (file);
 }
