@@ -14,15 +14,26 @@
 
 void	print_error(char *str, int errcode, t_data *all)
 {
-	if (errcode == 127)
+	if (errcode == 127 && str)
 	{
 		ft_putstr_fd(str, 2);
 		ft_putstr_fd(": command not found\n", 2);
 		free_all(all);
 		exit(errcode);
 	}
-	ft_putstr_fd(str, 2);
-	ft_putstr_fd(": ", 2);
+	if (!str)
+	{
+		ft_putstr_fd("fork: Resource temporarily unavailable", 2);
+		ft_putstr_fd("\n", 2);
+		all->status = 1;
+		free_all(all);
+		exit(errcode);
+	}
+	if (str)
+	{
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd(": ", 2);
+	}
 	ft_putstr_fd(strerror(errno), 2);
 	ft_putstr_fd("\n", 2);
 	free_all(all);

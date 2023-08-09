@@ -23,7 +23,7 @@ void	ft_commands(char **envp, t_data *all)
 		token_to_cmd(all);
 		free_token(all->token);
 		all->token = NULL;
-		open_pipe(all);
+		open_pipe(all);//return -1
 		all->id = malloc(sizeof(pid_t) * all->cmd_len);
 		if (!all->id)
 			return ;

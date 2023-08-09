@@ -45,7 +45,7 @@ void	cmd_child(t_cmd *cmd, char **envp, t_data *all)
 {
 	all->id[cmd->index] = fork();
 	if (all->id[cmd->index] == -1)
-		exit(0);
+		print_error(NULL, 2, all);
 	if (all->id[cmd->index] == 0)
 	{
 		do_redirection(cmd, all, envp);
