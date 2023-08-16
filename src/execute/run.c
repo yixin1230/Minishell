@@ -17,6 +17,8 @@ void	run_cmd(t_cmd *cmd, char **envp, t_data *all)
 {
 	char *path;
 	
+	protect_dup2(all->tmp_fd, 0, all);
+	close(all->tmp_fd);
 	if( ft_strcmp(cmd->words[0], "builtin" )== 0)
 	{
 		printf("it's builtin");
@@ -41,20 +43,32 @@ void	run_cmd(t_cmd *cmd, char **envp, t_data *all)
 		free(path);
 }
 
-void	cmd_child(t_cmd *cmd, char **envp, t_data *all)
+int	cmd_child(t_cmd *cmd, char **envp, t_data *all)
 {
+	int	fd[2];
+
+	if (protect_pipe(fd, all) == -1)
+		return (-1);
 	all->id[cmd->index] = fork();
 	if (all->id[cmd->index] == -1)
-		print_error(NULL, 2, all);
+		return (-1);
 	if (all->id[cmd->index] == 0)
 	{
-		do_redirection(cmd, all, envp);
-		if (cmd->fd_in != 0)
-			protect_dup2(cmd->fd_in, 0, all);
-		if (cmd->fd_out != 1)
-			protect_dup2(cmd->fd_out, 1, all);
-		close_all_fd(&all->cmd, all);
+		if (!cmd->next)
+			protect_dup2(all->tmp_out, 1, all);
+		else
+			protect_dup2(fd[1], 1, all);
+		close(all->tmp_out);
+		close(fd[0]);
+		close(fd[1]);
 		run_cmd(cmd, envp, all);
 		exit(0);
+	}
+	else
+	{
+		close(fd[1]);
+		close(all->tmp_fd);
+		all->tmp_fd = fd[0];
+		return (0);
 	}
 }

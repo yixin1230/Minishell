@@ -53,6 +53,8 @@ typedef struct s_data
 	char				*input;
 	pid_t				*id;
 	int					cmd_len;
+	int					tmp_fd;
+	int					tmp_out;
 }t_data;
 
 typedef struct s_cmd
@@ -113,7 +115,7 @@ int			path_index(char **envp);
 void		run_cmd(t_cmd *cmd, char **envp, t_data *all);
 
 //child
-void		cmd_child(t_cmd *cmd, char **envp, t_data *all);
+int			cmd_child(t_cmd *cmd, char **envp, t_data *all);
 
 //free and print error : cmd && token && str
 void		print_error(char *str, int errcode, t_data *all);
@@ -123,11 +125,11 @@ void		free_cmd(t_data *all);
 void		free_all(t_data *all);
 
 //protect
-void		protect_waitpid(pid_t id, int *status, int options, t_data *all);
+int			protect_waitpid(pid_t id, int *status, int options, t_data *all);
 void		protect_dup2(int file, int file2, t_data *all);
 void		protect_close(int file, t_data *all);
 void		protect_write(int fd, char *buf, int count, t_data *all);
-void		protect_pipe(int fd[2], t_data *all);
+int			protect_pipe(int fd[2], t_data *all);
 
 //redi
 int			redi_in(t_cmd *cmd, t_token *redi, t_data *all);
