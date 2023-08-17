@@ -30,12 +30,12 @@ void	run_cmd(t_cmd *cmd, char **envp, t_data *all)
 	 	path = cmd->words[0];
 	else
 		path = find_path(cmd->words[0], envp);
-	// if (access(path, X_OK) != 0  && path[0] == '.')
-	// 	print_error(cmd->words[0], 126, all);
 	if (!path)
 		print_error(cmd->words[0], 127, all);
-	else if (access(path, X_OK) != 0 /* && path[0] == '.' */)
+	else if (access(path, X_OK) != 0 && path[0] == '.')
 		print_error(cmd->words[0], 126, all);
+	else if (access(path, X_OK) != 0)
+	 	print_error(cmd->words[0], 127, all);
 	else if (execve(path, cmd->words, envp) == -1)
 	{
 		free(path);
