@@ -55,6 +55,7 @@ typedef struct s_data
 	int					cmd_len;
 	int					tmp_fd;
 	int					tmp_out;
+	int					tmp_in;
 }t_data;
 
 typedef struct s_cmd
@@ -101,6 +102,7 @@ int			split_without_quote(char *str, int i, char c, t_token **top);
 int			split_spaces_char(char *str, int i, t_token **top);
 int			dollar_split_dollar(char *str, int i, t_token **top);
 void		give_token_type(t_data *all);
+t_token	*delspace_jointoken(t_token ** token, char **envp, t_data *all);
 
 //cmd
 int			cmd_len(t_token **token, int index);

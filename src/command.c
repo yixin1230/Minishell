@@ -27,7 +27,7 @@ void	ft_commands(char **envp, t_data *all)
 		if (!all->id)
 			return ;
 		fork_loop(all, envp);
-		close(all->tmp_fd);
+		//close(all->tmp_fd);
 		close(all->tmp_out);
 		while (i < all->cmd_len)
 		{
@@ -60,9 +60,10 @@ int	redi_loop(t_cmd **top, t_data *all, char **envp)
 	t_cmd	*curr;
 
 	curr = *top;
+	(void)envp;
+	(void)all;
 	while (curr)
 	{
-		do_redirection(curr, all, envp);
 		if (!curr->next)
 			return (0);
 		curr = curr->next;
