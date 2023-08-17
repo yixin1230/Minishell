@@ -19,7 +19,11 @@ int	init_pipe(t_data *all, t_cmd *cmd, int **fd_2d)
 	fd_2d[cmd->index] = malloc(sizeof(int) * 2);
 	if (!fd_2d[cmd->index])
 		return (-1);
-	protect_pipe(fd_2d[cmd->index]);
+	if (pipe(fd_2d[cmd->index]) == -1)
+	{
+		free(fd_2d[cmd->index]);
+		return (cmd->index);
+	}
 	if (cmd->index != 0)
 		cmd->fd_in = fd_2d[cmd->index - 1][0];
 	if (!cmd->next)
@@ -36,6 +40,7 @@ int	open_pipe(t_data *all)
 {
 	int		**fd_2d;
 	t_cmd	*curr;
+	int		index;
 
 	fd_2d = malloc(sizeof(int*) * (all->cmd_len + 1));
 	if (!fd_2d)
@@ -44,26 +49,33 @@ int	open_pipe(t_data *all)
 	curr = all->cmd;
 	while (curr)
 	{
-		if (init_pipe(all, curr, fd_2d) == -1)
+		index = init_pipe(all, curr, fd_2d);
+		if (index != 0)
 		{
-			free_fd_2d(fd_2d);
+			free_fd_2d(fd_2d ,index);
 			return (1);
 		}
 		if (!curr->next)
 			break ;
 		curr = curr->next;
 	}
-	free_fd_2d(fd_2d);
+	free_fd_2d(fd_2d, 0);
 	return (0);
 }
 
-void	free_fd_2d(int **fd_2d)
+
+void	free_fd_2d(int **fd_2d, int index)
 {
 	int	i;
 
 	i = 0;
-	while (fd_2d[i])
+	while (i < index)
 	{
+		if (index != 0)
+		{
+			close(fd_2d[i][0]);
+			close(fd_2d[i][1]);
+		}
 		free(fd_2d[i]);
 		i++;
 	}

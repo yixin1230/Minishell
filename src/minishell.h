@@ -167,7 +167,7 @@ void ft_commands(char **envp, t_data *data);
 int	ft_isspace(char c);
 
 //pipe
-void	free_fd_2d(int **fd_2d);
+void	free_fd_2d(int **fd_2d, int index);
 int		init_pipe(t_data *all, t_cmd *cmd, int **fd_2d);
 int		open_pipe(t_data *all);
 int		redi_loop(t_cmd **top, t_data *all, char **envp);

@@ -20,15 +20,17 @@ void ft_commands(char **envp, t_data *all)
 	i = 0;
 	if (ft_strcmp(all->input, "exit") == 0)
 		exit(0);
-	//else if (ft_strcmp(all->input, "history") == 0)
-	//	printf_history(all->history);
 	else if (ft_strcmp(all->input, "") != 0)
 	{
 		tokenized(all, envp);
 		token_to_cmd(all);
 		free_token(all->token);
-		open_pipe(all);
-		//redi_loop(&all->cmd, all, envp);
+		if (open_pipe(all) != 0)
+		{
+			ft_putstr_fd("minishell-> fork : resource temporarily unavailable", 2);
+			ft_putstr_fd("\n", 2);
+			return ;
+		}
 		all->id = malloc(sizeof(pid_t) * all->cmd_len);
 		if (!all->id)
 			return ;

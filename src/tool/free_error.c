@@ -30,8 +30,11 @@ void	print_error(char *str, int errcode)
 	}
 	else
 	{
-		ft_putstr_fd(str, 2);
-		ft_putstr_fd(": ", 2);
+		if (str)
+		{
+			ft_putstr_fd(str, 2);
+			ft_putstr_fd(": ", 2);
+		}
 		ft_putstr_fd(strerror(errno), 2);
 		ft_putstr_fd("\n", 2);
 		exit(errno);
