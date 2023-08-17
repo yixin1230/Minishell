@@ -115,8 +115,8 @@ t_cmd	*new_cmd(char **words, int len)
 	new->redi = NULL;
 	new->words = words;
 	new->len = len;
-	//new->fd_in = dup(0);
-	//new->fd_out = dup(1);
+	new->fd_in = 0;
+	new->fd_out = 0;
 	new->index = 0;
 	return (new);
 }
