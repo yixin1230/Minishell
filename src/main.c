@@ -29,7 +29,7 @@ int main(int argc, char **argv, char **envp)
 	{
 		all.tmp_out = dup(1);
 		all.tmp_fd = dup(0);
-		all.tmp_in = dup(0);
+		//all.tmp_in = dup(0);
 		protect_dup2(all.tmp_out, 1, &all);
 		protect_dup2(all.tmp_fd, 0, &all);
 		all.cmd = NULL;
