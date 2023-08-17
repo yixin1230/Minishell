@@ -52,11 +52,11 @@ void	do_redirection(t_cmd *cmd, t_data *all, char **envp)
 int	redi_in(t_cmd *cmd, t_token *redi, t_data *all)
 {
 	int	file;
-	
+	(void)cmd;
 	file = open(redi->str, O_RDONLY);
 	if (file < 0)
 		print_error(redi->str, 1, all);
-	cmd->fd_in = file;
+	all->tmp_fd = file;
 	return (file);
 }
 

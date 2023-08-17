@@ -28,7 +28,7 @@ void	ft_commands(char **envp, t_data *all)
 			return ;
 		fork_loop(all, envp);
 		//close(all->tmp_fd);
-		close(all->tmp_out);
+		//close(all->tmp_out);
 		while (i < all->cmd_len)
 		{
 			if (protect_waitpid(all->id[i], &all->status, 0, all) == -1)
@@ -53,6 +53,8 @@ void	fork_loop(t_data *all, char **envp)
 			break ;
 		curr = curr->next;
 	}
+	close(curr->fd_in);
+	close(curr->fd_out);
 }
 
 int	redi_loop(t_cmd **top, t_data *all, char **envp)
