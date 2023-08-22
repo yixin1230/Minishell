@@ -53,8 +53,8 @@ void	fork_loop(t_data *all, char **envp)
 			break ;
 		curr = curr->next;
 	}
-	close(curr->fd_in);
-	close(curr->fd_out);
+	close(all->tmp_fd);
+	close(all->tmp_out);
 }
 
 int	redi_loop(t_cmd **top, t_data *all, char **envp)

@@ -72,7 +72,10 @@ int	cmd_child(t_cmd *cmd, char **envp, t_data *all)
 	{
 		close(fd[1]);
 		close(all->tmp_fd);
-		all->tmp_fd = fd[0];
+		if (cmd->next)
+			all->tmp_fd = fd[0];
+		else
+			close(fd[0]);
 		return (0);
 	}
 }
