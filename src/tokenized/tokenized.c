@@ -148,7 +148,11 @@ void	tokenized(t_data *all, char **envp)
 	//syntax_error_check
 }
 
-//test:gcc split_token.c token_util.c tokenized.c ../tool/free_error.c ../tool/protection.c ../tool/tool_utils.c ../env/find_env.c ../env/handle_dollar_sign.c ../../libft/libft.a
+//test:gcc split_token.c split_token_utils.c quote_utils.c token_util.c tokenized.c ../tool/free_error.c ../tool/protection.c ../tool/tool_utils.c ../env/find_env.c ../env/handle_dollar_sign.c ../env/dollar_split_utils.c ../../libft/libft.a
+void leaks(void)
+{
+	system("leaks -q a.out");
+}
 
 /* int main(int argc, char **argv,char **envp)
 {
@@ -156,8 +160,8 @@ void	tokenized(t_data *all, char **envp)
 	t_data	all;
 	char *str;
 
+	atexit(leaks);
 	all.cmd =NULL;
-	all.history =NULL;
 	(void)argc;
 	(void)argv;
 	//all.input = "  c\"\'\" asdasda\"\'\">&| \"|\" ";
@@ -166,16 +170,16 @@ void	tokenized(t_data *all, char **envp)
 	//all.input = "  chkhk df >outfile <infile";
 	//all.input = " cmd <file  >outfile | \"|\"<infile";
 	//all.input = "cat <file1 cat > out | <ls| <file cmd"; //break pipe
-	all.input = " \'$PATH\' $$<< in|fi\'\'le   	  hgjgh$dsf$sdfd$?$$$$$ <infile cmd arg>outfile | cmd1 aa a a a >1outfile|";//$$ error
+	//all.input = " \'$PATH\' $$<< in|fi\'\'le   	  hgjgh$dsf$sdfd$?$$$$$ <infile cmd arg>outfile | cmd1 aa a a a >1outfile|";//$$ error
 	//all.input = " $PATH ADS  $sdf $ df hgjgh$dsf$sdfd$?$$$$$";
-	all.input = " $PATH ";
+	//all.input = " $PATH ";
 	//all.input = "ls|wc";
 	//all.input = "||\"|\"cmd "; //break pipe
 	//all.input = " echo adfds''fdas\'$PATH\'SDGF";
 	//all.input = " \"echo\" hello | wc";
 	//all.input = "<file1 cat > out \"|\" <infile "; //works 
-	all.input = " <infile>cmd >outfile | <infile";
-	all.input = "ASDASD\'$USER\"$USER\"\'\'\'HASDOASDH\'$USER\'\"$USER\"";
+	//all.input = " <infile>cmd >outfile | <infile";
+	//all.input = "ASDASD\'$USER\"$USER\"\'\'\'HASDOASDH\'$USER\'\"$USER\"";
 	tokenized(&all, envp);
 	curr = all.token;
 	printf("test:%s\n", all.input);
@@ -183,7 +187,8 @@ void	tokenized(t_data *all, char **envp)
 	{
 		printf(" %i: type :%i :%s\n", curr->index, curr->type , curr->str);
 		curr = curr->next;
-	} 
+	}
+	exit(0);
 	return 0;
 } */
 

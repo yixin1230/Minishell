@@ -32,7 +32,7 @@ SRC			= ./src/main.c \
 				./src/execute/open_pipe.c\
 				./src/env/find_env.c\
 				./src/env/handle_dollar_sign.c\
-				./src/env/dollar_split.utils.c\
+				./src/env/dollar_split_utils.c\
 				./src/tool/free_error.c\
 				./src/tool/protection.c\
 				./src/tool/tool_utils.c\

@@ -139,8 +139,6 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 }
 
 
-//complie:gcc create_cmd.c free_error.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../env/find_env.c ../../libft/libft.a
-
 //test1:add_cmd_end && new_cmd
 /* int main(int argc, char **argv, char **envp)
 {
@@ -177,7 +175,7 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 	return 0;
 } */
 
-//complie:gcc create_cmd.c ../tool/free_error.c ../tool/tool_utils.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../env/find_env.c ../env/handle_dollar_sign.c ../../libft/libft.a
+//complie:gcc create_cmd.c ../tool/free_error.c ../tool/tool_utils.c ../tokenized/split_token.c ../tokenized/split_token_utils.c ../tokenized/quote_utils.c ../tokenized/token_util.c ../tokenized/tokenized.c ../env/find_env.c ../env/dollar_split_utils.c ../env/handle_dollar_sign.c ../../libft/libft.a
 //test2:token_to_cmd && cmd_len
 
 /* int main(int argc, char **argv, char **envp)
@@ -191,6 +189,7 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 	//str = "  chkhk ";
 	//str = "  chkhk  \"HELLO -> \'\"";
 	all.input = str;
+	atexit(leaks);
 	tokenized(&all, envp);
 	token_to_cmd(&all);
 	t_cmd *curr = all.cmd;
@@ -206,9 +205,8 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 	}  
 	printf("cmd_len : %i \n",all.cmd_len);
 	return 0;
-} */
-
-//complie:gcc create_cmd.c ../tool/free_error.c ../tool/tool_utils.c ../tokenized/split_token.c ../tokenized/token_util.c ../tokenized/tokenized.c ../env/find_env.c ../env/handle_dollar_sign.c ../../libft/libft.a
+}
+ */
 //test3:add_redirection
 
 // int main(int argc, char **argv, char **envp)

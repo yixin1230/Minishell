@@ -27,8 +27,6 @@ void	ft_commands(char **envp, t_data *all)
 		if (!all->id)
 			return ;
 		fork_loop(all, envp);
-		//close(all->tmp_fd);
-		//close(all->tmp_out);
 		while (i < all->cmd_len)
 		{
 			if (protect_waitpid(all->id[i], &all->status, 0, all) == -1)

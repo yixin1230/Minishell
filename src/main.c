@@ -12,10 +12,10 @@
 
 #include "minishell.h"
 
-void leaks(void)
+/* void leaks(void)
 {
 	system("leaks -q minishell");
-}
+} */
 
 int main(int argc, char **argv, char **envp)
 {
