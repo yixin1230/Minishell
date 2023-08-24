@@ -23,6 +23,9 @@
 # include <sys/types.h>//pid_t
 # include <sys/wait.h>//waitpid
 # include <errno.h>//errno
+# include <dirent.h>
+
+int g_exit_status;
 
 enum
 {
