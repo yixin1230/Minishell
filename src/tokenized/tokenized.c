@@ -83,8 +83,8 @@ t_token	*delspace_jointoken(t_token ** token, char **envp, t_data *all)
 					tmp = curr->str;
 					curr->str = token_to_str(&to_tmp);
 					free(tmp);
-					//curr->type == WORD;
-					//free_token(to_tmp);
+					curr->type = WORD;
+					free_token(to_tmp);
 				}
 				if (!words)
 					words = ft_strdup(curr->str);
@@ -110,7 +110,6 @@ t_token	*delspace_jointoken(t_token ** token, char **envp, t_data *all)
 			break ;
 		curr = curr->next;
 	}
-	//free_token(curr);
 	return (top);
 }
 
@@ -128,6 +127,7 @@ void	tokenized(t_data *all, char **envp)
 	all->input = token_to_str(&to_tmp);
 	to_tmp = split_token(all->input);
 	all->token = delspace_jointoken(&to_tmp, envp, all);
+	free_token(to_tmp);
 	curr = all->token;
 	while (curr != NULL)
 	{
@@ -188,6 +188,7 @@ void leaks(void)
 		printf(" %i: type :%i :%s\n", curr->index, curr->type , curr->str);
 		curr = curr->next;
 	}
+	free_token(all.token);
 	exit(0);
 	return 0;
 } */

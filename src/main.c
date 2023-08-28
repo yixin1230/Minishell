@@ -12,33 +12,31 @@
 
 #include "minishell.h"
 
-/* void leaks(void)
-{
-	system("leaks -q minishell");
-} */
-
 int main(int argc, char **argv, char **envp)
 {
 	t_data all;
+	char *input;
 
 	(void)argc;
 	(void)argv;
 	all.envp = envp;
-	//atexit(leaks);
 	while (1)
 	{
 		all.tmp_out = dup(1);
 		all.tmp_fd = dup(0);
-		//all.tmp_in = dup(0);
 		protect_dup2(all.tmp_out, 1, &all);
 		protect_dup2(all.tmp_fd, 0, &all);
 		all.cmd = NULL;
 		all.token = NULL;
 		all.id = NULL;
-		all.input = readline("minishell-> ");
+		input = readline("minishell-> ");
+		all.input = input;
 		add_history(all.input);
 		ft_commands(envp, &all);
-		//exit(0);//test leaks
+		free_cmd(&all);
+		free(input);
+		free(all.input);
+		free(all.id);
 	}
 	return (0);
 }

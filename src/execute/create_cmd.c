@@ -192,6 +192,7 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 	atexit(leaks);
 	tokenized(&all, envp);
 	token_to_cmd(&all);
+	free_token(all.token);
 	t_cmd *curr = all.cmd;
 	while (curr != NULL)
 	{
@@ -202,11 +203,13 @@ void	add_cmd_end(t_cmd **top, t_cmd *new)
 			i++;
 		}
 		curr=curr->next;
-	}  
+	}
 	printf("cmd_len : %i \n",all.cmd_len);
+	free(all.input);
+	free_cmd(&all);
 	return 0;
-}
- */
+} */
+
 //test3:add_redirection
 
 // int main(int argc, char **argv, char **envp)
