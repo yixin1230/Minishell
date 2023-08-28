@@ -12,26 +12,6 @@
 
 #include "../minishell.h"
 
-void	print_error(char *str, int errcode, t_data *all)
-{
-	if (errcode == 127)
-	{
-		ft_putstr_fd(str, 2);
-		ft_putstr_fd(": command not found\n", 2);
-		free_all(all);
-		exit(errcode);
-	}
-	ft_putstr_fd(str, 2);
-	ft_putstr_fd(": ", 2);
-	ft_putstr_fd(strerror(errno), 2);
-	ft_putstr_fd("\n", 2);
-	free_all(all);
-	if (errcode == 1 || errcode == 126)
-		exit(errcode);
-	else
-		exit(errno);
-}
-
 void	free_2dstr(char **str)
 {
 	int	i;
@@ -91,8 +71,6 @@ void	free_all(t_data *all)
 {
 	if (all->cmd)
 		free_cmd(all);
-	if (all->token)
-		free_token(all->token);
 	if (all->input)
 		free(all->input);
 	if (all->id)

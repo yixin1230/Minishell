@@ -14,8 +14,6 @@
 
 int	init_pipe(t_data *all, t_cmd *cmd, int **fd_2d)
 {
-
-	(void)all;
 	fd_2d[cmd->index] = malloc(sizeof(int) * 2);
 	if (!fd_2d[cmd->index])
 		return (-1);
@@ -37,7 +35,7 @@ int	open_pipe(t_data *all)
 	int		**fd_2d;
 	t_cmd	*curr;
 
-	fd_2d = malloc(sizeof(int*) * (all->cmd_len + 1));
+	fd_2d = malloc(sizeof(int *) * (all->cmd_len + 1));
 	if (!fd_2d)
 		return (1);
 	fd_2d[all->cmd_len] = NULL;

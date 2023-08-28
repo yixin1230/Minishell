@@ -14,11 +14,11 @@
 
 t_token	*split_token(char *str)
 {
-	int	i;
+	int		i;
 	t_token	*top;
 
 	i = 0;
-	top =NULL;
+	top = NULL;
 	if (!str)
 		return (NULL);
 	while (str[i] && ft_isspace(str[i]))
@@ -33,7 +33,7 @@ t_token	*split_token(char *str)
 			i = split_redi(str, i, str[i], &top);
 		else if (str[i] == '|')
 			i = split_char(str, i, &top, '|');
-		else if (!ft_isspace(str[i]) && str[i] != '\"' && str[i] != '\''&& str[i] != '|')
+		else if (!ft_isspace(str[i]) && str[i] != '\"' && str[i] != '\'' && str[i] != '|')
 			i = split_general_char(str, i, &top);
 		else if (ft_isspace(str[i]))
 			i = split_spaces_char(str, i, &top);
@@ -41,22 +41,7 @@ t_token	*split_token(char *str)
 	return (top);
 }
 
-int	split_spaces_char(char *str, int i, t_token **top)
-{
-	int		len;
-	char	*line;
-	t_token	*new;
-
-	len = space_len(&str[i]);
-	line = ft_substr(str, i, len);
-	new = new_token(line);
-	new->type = SPACES;
-	add_token_end(top, new);
-	i += len;
-	return (i);
-}
-
-int	split_general_char(char *str, int i, t_token **top)//not works yet
+int	split_general_char(char *str, int i, t_token **top)
 {
 	int		len;
 	char	*line;
@@ -71,71 +56,7 @@ int	split_general_char(char *str, int i, t_token **top)//not works yet
 	return (i);
 }
 
-int	split_without_quote(char *str, int	i, char c, t_token **top)
-{
-	int		start;
-	int		len;
-	char	*line;
-	t_token	*new;
-
-	start = i + 1;
-	len = strlen_char(&str[start], c);
-	if (len == 0)
-		return (len + start + 1);
-	else
-		line = ft_substr(str, start, len);
-	i = len + start + 1;
-	new = new_token(line);
-	if (c == '\'')
-		new->type = SQUO;
-	else
-		new->type = DQUO;
-	add_token_end(top, new);
-	return (i);
-}
-
-int	split_with_quote(char *str, int	i, char c, t_token **top)
-{
-	int		start;
-	int		len;
-	char	*line;
-	t_token	*new;
-
-	start = i;
-	len = strlen_char(&str[start + 1], c) + 2;
-	if (len == 2)
-		return (len + start + 1);
-	else
-		line = ft_substr(str, start, len);
-	i = len + start + 1;
-	new = new_token(line);
-	if (c == '\'')
-		new->type = SQUO;
-	else
-		new->type = DQUO;
-	add_token_end(top, new);
-	return (i);
-}
-
-int	split_char(char *str, int i, t_token **top, char c)
-{
-	char	*line;
-	t_token	*new;
-
-	line = ft_substr(str, i, 1);
-	new = new_token(line);
-	if (c == '|')
-		new->type = PIPE;
-	if (c == '<')
-		new->type = INPUT_RE;
-	if (c == '>')
-		new->type = OUTPUT_RE;
-	add_token_end(top, new);
-	i += 1;
-	return (i);
-}
-
-int	split_redi(char *str, int	i, char c, t_token **top)
+int	split_redi(char *str, int i, char c, t_token **top)
 {
 	char	*line;
 	t_token	*new;
@@ -156,8 +77,11 @@ int	split_redi(char *str, int	i, char c, t_token **top)
 	return (i);
 }
 
-//test :  gcc split_token.c token_util.c tokenized.c ../tool/free_error.c ../tool/protection.c ../tool/tool_utils.c ../env/find_env.c ../env/handle_dollar_sign.c ../../libft/libft.a
-
+/*
+test :  gcc split_token.c token_util.c tokenized.c ../tool/free_error.c 
+../tool/protection.c ../tool/tool_utils.c ../env/find_env.c 
+../env/handle_dollar_sign.c ../../libft/libft.a
+*/
 
 /* int main(void)
 {
@@ -168,7 +92,8 @@ int	split_redi(char *str, int	i, char c, t_token **top)
 	//str = "|||cmd ";
 	//str = "  c\"\'\" asdasda\"\'\">&| \"|\" ";
 	//str = "&&&cmd "; //break pipe
-	//str = "$ adisad $PATH  $$<<c\"\'\'\" <<<<< c\'\"\"\' b\"cd\" c \"\'\'\" | \'hello world>\'>> ";
+	//str = "$ adisad $PATH  $$<<c\"\'\'\" <<<<< c\'\"\"\' 
+		b\"cd\" c \"\'\'\" | \'hello world>\'>> ";
 	str = "$PATH $$<<   	infile <infile cmd arg>outfile| cmd|1 aa a a a >1outfile|";
 	//str = "$ adisad  $PATH  a\"\'\'\"a <<<";
 	//str = " $ $chkhk$$$ df";

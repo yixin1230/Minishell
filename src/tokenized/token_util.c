@@ -12,12 +12,12 @@
 
 #include "../minishell.h"
 
-int strlen_char(char *str, char c)
+int	strlen_char(char *str, char c)
 {
 	int	i;
 
 	i = 0;
-	if (c =='\'' || c =='\"')
+	if (c == '\'' || c == '\"')
 	{
 		while (str[i] && str[i] != c)
 			i++;
@@ -27,14 +27,13 @@ int strlen_char(char *str, char c)
 		&& str[i] != '\"' && str[i] != '|'
 		&& str[i] != '<' && str[i] != '>')
 		i++;
-	return (i);	
+	return (i);
 }
 
 t_token	*new_token(char *str)
 {
 	t_token	*new;
 
-	
 	new = malloc(sizeof(t_token));
 	if (!new)
 		return (NULL);

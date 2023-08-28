@@ -12,12 +12,12 @@
 
 #include "../minishell.h"
 
-int		path_index(char **envp)
+int	path_index(char **envp)
 {
 	int	i;
 
 	i = 1;
-	while(envp[++i] != NULL)
+	while (envp[++i] != NULL)
 	{
 		if (ft_strnstr(envp[i], "PATH", 4) != NULL)
 			return (i);
@@ -33,8 +33,7 @@ char	*find_path(char *cmd, char **envp)
 	char	*path;
 	char	**all_path;
 	int		i;
-	
-	
+
 	i = path_index(envp);
 	if (i < 0)
 		return (NULL);

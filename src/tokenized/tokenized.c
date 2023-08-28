@@ -10,53 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../minishell.h"
 
-int	quote_check(char *str)
-{
-	int	i;
-	int	d_quo;
-	int	s_quo;
-
-	i = 0;
-	d_quo = 0;
-	s_quo = 0;
-	if (!str)
-		return (0);
-	while (str[i])
-	{
-		if (str[i] == '\'')
-			i = quote_count(str, i, &s_quo, '\'');
-		if (str[i] == '\"')
-			i = quote_count(str, i, &d_quo, '\"');
-		i++;
-	}
-	if (s_quo % 2 != 0 || d_quo % 2 != 0)
-	{
-		printf("unclosed quote error \n");
-		exit (1);
-	}
-	return (0);
-}
-
-int quote_count(char *str, int i,int *quo_nb, char quo)
-{
-	*quo_nb += 1;
-	i++;
-	while(str[i])
-	{
-		if (str[i] == quo)
-		{
-			*quo_nb += 1;
-			break ;
-		}
-		i++;
-	}
-	return (i);
-}
-
-t_token	*delspace_jointoken(t_token ** token, char **envp, t_data *all)
+t_token	*delspace_jointoken(t_token ** token, char **envp)
 {
 	t_token	*curr;
 	t_token	*top;
@@ -80,19 +36,17 @@ t_token	*delspace_jointoken(t_token ** token, char **envp, t_data *all)
 				if(curr->str && curr->type == DQUO)
 				{
 					to_tmp = dollar_split(curr->str, DQUO);
-					swap_val(&to_tmp, envp, all);
+					swap_val(&to_tmp, envp);
 					tmp = curr->str;
 					curr->str = token_to_str(&to_tmp);
 					free(tmp);
+					curr->type = WORD;
+					free_token(to_tmp);
 				}
 				if (!words)
 					words = ft_strdup(curr->str);
 				else
-				{
-					tmp = words;
 					words = ft_strjoin(words, curr->str);
-					free(tmp);
-				}
 				if (!curr->next || (curr->next && (curr->next->type == SPACES
 					|| curr->next->type == PIPE || curr->next->type == INPUT_RE
 					|| curr->next->type == OUTPUT_RE || curr->next->type == HERE_DOC
@@ -113,24 +67,26 @@ t_token	*delspace_jointoken(t_token ** token, char **envp, t_data *all)
 			break ;
 		curr = curr->next;
 	}
-	free_token(*token);
 	return (top);
 }
 
-void	tokenized(t_data *all, char **envp)
+int	tokenized(t_data *all)
 {
 	t_token		*curr;
 	t_token		*to_tmp;
+	char **envp;
 
+	envp = ft_get_envp(all->env);
 	curr = NULL;
 	if (quote_check(all->input) == 1)
 		exit (1);
 	to_tmp = NULL;
 	to_tmp = dollar_split(all->input, 0);
-	swap_val(&to_tmp, envp, all);
+	swap_val(&to_tmp, envp);
 	all->input = token_to_str(&to_tmp);
 	to_tmp = split_token(all->input);
-	all->token = delspace_jointoken(&to_tmp, envp, all);
+	all->token = delspace_jointoken(&to_tmp, envp);
+	free_token(to_tmp);
 	curr = all->token;
 	while (curr != NULL)
 	{
@@ -145,13 +101,16 @@ void	tokenized(t_data *all, char **envp)
 		else if (curr->str && (curr->type == EMPTY || curr->type == SQUO || curr->type == DQUO))
 			curr->type = WORD;
 		if (!curr->next)
-			return ;
+			return (0);
 		curr = curr->next;
 	}
-	//syntax_error_check
+	return (0);
 }
 
-//test:gcc split_token.c token_util.c tokenized.c ../tool/free_error.c ../tool/protection.c ../tool/tool_utils.c ../env/find_env.c ../env/handle_dollar_sign.c ../../libft/libft.a
+// ft_putstr_fd("minishell: ", STDERR_FILENO);
+// 	if (error == 0)
+// 		ft_putstr_fd("syntax error near unexpected token 'newline'\n",
+// 			STDERR_FILENO);
 
 /* int main(int argc, char **argv,char **envp)
 {
@@ -159,9 +118,7 @@ void	tokenized(t_data *all, char **envp)
 	t_data	all;
 	char *str;
 
-	atexit(leaks);
 	all.cmd =NULL;
-	all.history =NULL;
 	(void)argc;
 	(void)argv;
 	//all.input = "  c\"\'\" asdasda\"\'\">&| \"|\" ";
@@ -172,22 +129,21 @@ void	tokenized(t_data *all, char **envp)
 	//all.input = "cat <file1 cat > out | <ls| <file cmd"; //break pipe
 	all.input = " \'$PATH\' $$<< in|fi\'\'le   	  hgjgh$dsf$sdfd$?$$$$$ <infile cmd arg>outfile | cmd1 aa a a a >1outfile|";//$$ error
 	//all.input = " $PATH ADS  $sdf $ df hgjgh$dsf$sdfd$?$$$$$";
-	//all.input = " $PATH ";
+	all.input = " $PATH ";
 	//all.input = "ls|wc";
 	//all.input = "||\"|\"cmd "; //break pipe
 	//all.input = " echo adfds''fdas\'$PATH\'SDGF";
 	//all.input = " \"echo\" hello | wc";
 	//all.input = "<file1 cat > out \"|\" <infile "; //works 
-	//all.input = " <infile>cmd >outfile | <infile";
-	//all.input = "ASDASD\'$USER\"$USER\"\'\'\'HASDOASDH\'$USER\'\"$USER\"";
-	tokenized(&all, envp);
+	all.input = " <infile>cmd >outfile | <infile";
+	all.input = "ASDASD\'$USER\"$USER\"\'\'\'HASDOASDH\'$USER\'\"$USER\"";
+	tokenized(&all);
 	curr = all.token;
 	printf("test:%s\n", all.input);
 	 while (curr != NULL)
 	{
 		printf(" %i: type :%i :%s\n", curr->index, curr->type , curr->str);
 		curr = curr->next;
-	}
-	exit(0);
+	} 
 	return 0;
 } */
