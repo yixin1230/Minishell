@@ -89,7 +89,8 @@ void	ft_commands(t_data *all)
 	i = 0;
 	if (ft_strcmp(all->input, "") != 0)
 	{
-		tokenized(all);
+		if (tokenized(all))
+			return ;
 		token_to_cmd(all);
 		free_token(all->token);
 		all->token = NULL;

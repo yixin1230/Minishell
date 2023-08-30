@@ -83,7 +83,7 @@ int	tokenized(t_data *all)
 	envp = ft_get_envp(all->env);
 	curr = NULL;
 	if (quote_check(all->input) == 1)
-		exit (1);
+		return (1);
 	to_tmp = NULL;
 	to_tmp = dollar_split(all->input, 0);
 	swap_val(&to_tmp, envp);
