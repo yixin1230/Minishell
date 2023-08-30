@@ -22,7 +22,7 @@ int	redi_here_doc(t_token *redi, t_data *all, char **envp)
 	protect_pipe(fd, all);
 	id = fork();
 	if (id < 0)
-		print_error(NULL, 1, all);
+		print_error("NULL", 1, all);
 	if (id == 0)
 	{
 		handle_signal(3);

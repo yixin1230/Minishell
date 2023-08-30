@@ -43,7 +43,6 @@ t_token	*delspace_jointoken(t_token **token, char **envp)
 					curr->str = token_to_str(&to_tmp);
 					free(tmp);
 					curr->type = WORD;
-					free_token(to_tmp);
 				}
 				if (!words)
 					words = ft_strdup(curr->str);
@@ -83,7 +82,7 @@ int	tokenized(t_data *all)
 	envp = ft_get_envp(all->env);
 	curr = NULL;
 	if (quote_check(all->input) == 1)
-		exit (1);
+		return (1);
 	to_tmp = NULL;
 	to_tmp = dollar_split(all->input, 0);
 	swap_val(&to_tmp, envp);

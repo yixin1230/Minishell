@@ -31,45 +31,11 @@ static void	fork_loop(t_data *all)
 	close(all->tmp_out);
 }
 
-int	redi_loop(t_cmd **top, t_data *all, char **envp)
-{
-	t_cmd	*curr;
-
-	curr = *top;
-	(void)envp;
-	(void)all;
-	while (curr)
-	{
-		if (!curr->next)
-			return (0);
-		curr = curr->next;
-	}
-	return (0);
-}
-
-int	close_all_fd(t_cmd **top, t_data *all)
-{
-	t_cmd	*curr;
-
-	curr = *top;
-	while (curr)
-	{
-		if (curr->fd_in != 0)
-			protect_close(curr->fd_in, all);
-		if (curr->fd_out != 1)
-			protect_close(curr->fd_out, all);
-		if (!curr->next)
-			return (0);
-		curr = curr->next;
-	}
-	return (0);
-}
-
 static void	ft_exit_status(t_data *all, int i)
 {
 	int	status;
 
-	g_exit_status = syntax_error_check(all->input);
+	status = syntax_error_check(all->input);
 	if (g_exit_status == 258)
 		return ;
 	if (protect_waitpid(all->id[i], &status, 0, all) == -1)
@@ -89,7 +55,8 @@ void	ft_commands(t_data *all)
 	i = 0;
 	if (ft_strcmp(all->input, "") != 0)
 	{
-		tokenized(all);
+		if (tokenized(all))
+			return ;
 		token_to_cmd(all);
 		free_token(all->token);
 		all->token = NULL;
