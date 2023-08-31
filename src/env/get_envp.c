@@ -6,11 +6,27 @@
 /*   By: jmetzger <jmetzger@student.codam.n>          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/06 16:38:38 by jmetzger      #+#    #+#                 */
-/*   Updated: 2023/08/17 05:28:33 by jmetzger      ########   odam.nl         */
+/*   Updated: 2023/08/30 17:18:40 by jmetzger      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	free_envp(char **envp)
+{
+	int	i;
+
+	if (envp != NULL)
+	{
+		i = 0;
+		while (envp[i] != NULL)
+		{
+			free(envp[i]);
+			i++;
+		}
+		free(envp);
+	}
+}
 
 static void	ft_protect_and_free(int i, char **envp)
 {
@@ -96,22 +112,3 @@ char	**ft_get_envp(t_env *env)
 	envp[count] = NULL;
 	return (envp);
 }
-
-// // -------------------------------------------------	
-// // -------------------------------------------------
-// static void free_envp(char **envp)
-// {
-// 	int i;
-//     if (envp != NULL)
-//     {
-// 		i = 0;
-//         while (envp[i] != NULL)
-//         {
-//             free(envp[i]);
-// 			i++;
-//         }
-//         free(envp);
-//     }
-// }
-// // -------------------------------------------------	
-// // -------------------------------------------------

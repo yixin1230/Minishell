@@ -29,13 +29,14 @@ static void	fork_loop(t_data *all)
 	}
 	close(all->tmp_fd);
 	close(all->tmp_out);
+	free_envp(envp);
 }
 
 static void	ft_exit_status(t_data *all, int i)
 {
 	int	status;
 
-	status = syntax_error_check(all->input);
+	g_exit_status = syntax_error_check(all->input);
 	if (g_exit_status == 258)
 		return ;
 	if (protect_waitpid(all->id[i], &status, 0, all) == -1)
@@ -46,6 +47,16 @@ static void	ft_exit_status(t_data *all, int i)
 		g_exit_status = 1;
 	else if (WIFEXITED(status))
 		g_exit_status = WEXITSTATUS(status);
+}
+
+static void	fork_wait(t_data *all, int i)
+{
+	fork_loop(all);
+	while (i < all->cmd_len)
+	{
+		ft_exit_status(all, i);
+		i++;
+	}
 }
 
 void	ft_commands(t_data *all)
@@ -69,17 +80,6 @@ void	ft_commands(t_data *all)
 		all->id = malloc(sizeof(pid_t) * all->cmd_len);
 		if (!all->id)
 			return ;
-		fork_loop(all);
-		while (i < all->cmd_len)
-		{
-			ft_exit_status(all, i);
-			i++;
-		}
+		fork_wait(all, i);
 	}
 }
-
-// printf("EXITCODE: %d\n", g_exit_status);
-// printf("SIGNAL: %d\n", WIFSIGNALED(status));
-// printf("EXITED: %d\n", WIFEXITED(status));
-// printf("SIG: %d\n", WTERMSIG(status));
-// printf("STATUS: %d\n", WEXITSTATUS(status));

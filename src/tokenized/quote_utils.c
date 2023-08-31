@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/08/09 16:26:19 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/08/30 11:19:35 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/08/30 14:42:51 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int	quote_check(char *str)
 	if (s_quo % 2 != 0 || d_quo % 2 != 0)
 	{
 		printf("unclosed quote error \n");
-		g_exit_status = 1;
 		return (1);
 	}
 	return (0);

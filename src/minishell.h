@@ -93,6 +93,7 @@ typedef struct s_data
 	int					tmp_out;
 	int					tmp_in;
 	int					here_status;
+	DIR					*dir;
 	char				*input;
 	pid_t				*id;
 	struct s_env		*env;
@@ -115,7 +116,6 @@ int			space_len(char *str);
 int			ft_isspace(char c);
 int			quote_check(char *str);
 int			quote_count(char *str, int i, int *quo_nb, char quo);
-int			escape_space(char *str);
 int			split_char(char *str, int i, t_token **top, char c);
 int			split_redi(char *str, int i, char c, t_token **top);
 int			split_spaces_char(char *str, int i, t_token **top);
@@ -129,6 +129,7 @@ char		*add_str_to_strend(char *lang_str, char *str);
 void		ft_commands(t_data *all);
 void		dollar_swap_val(t_token **curr, char **envp);
 t_token		*split_token(char *str);
+
 // TOKEN UTILITIES
 int			strlen_char(char *str, char c);
 void		add_token_end(t_token **top, t_token *new);
@@ -138,13 +139,13 @@ t_token		*copy_token(t_token *old);
 // COMMAND EXECUTION
 int			close_all_fd(t_cmd **top, t_data *all);
 int			cmd_len(t_token **token, int index);
-int			redi_here_doc(t_token *redi, t_data *all, char **envp);
 int			cmd_child(t_cmd *cmd, char **envp, t_data *all);
 char		*find_path(char *cmd, char **envp);
+void		do_here_doc(t_cmd *cmd, char **envp, t_data *all);
 void		token_to_cmd(t_data *all);
-void		here_doc(int out, char *limiter, t_data *all, char **envp);
 void		add_cmd_end(t_cmd **top, t_cmd *new);
 t_cmd		*new_cmd(char **words, int len);
+//void	here_doc(int out, char *limiter, t_data *all, char **envp);
 
 // REDIRECTION
 int			redi_in(t_cmd *cmd, t_token *redi, t_data *data);
@@ -162,6 +163,7 @@ void		print_error(char *str, int errcode, t_data *data);
 void		free_2dstr(char **str);
 void		free_token(t_token *token);
 void		free_all(t_data *all);
+void		free_cmd(t_data *all);
 
 // TOOL (protection)
 int			protect_waitpid(pid_t id, int *status, int options, t_data *data);
@@ -192,6 +194,7 @@ void		rl_replace_line(const char *text, int clear_undo);
 // ENVIRONMENT
 char		**ft_get_envp(t_env *env);
 char		**split_envp(char *env);
+void		free_envp(char **envp);
 t_env		*init_env(char **envp);
 
 // ENVIRONMENT (linked-list)

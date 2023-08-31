@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/22 09:50:27 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/08/30 11:24:39 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/08/31 09:39:41 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,23 @@ static void	ft_process_error(char *str, int errcode, t_data *all)
 		exit(errno);
 }
 
+static void	print_error_utils(char *str, int errcode, t_data *all)
+{
+	if (errcode == 6 && str)
+	{
+		ft_error_msg(str, ": No such file or directory\n");
+		exit(126);
+	}
+	else if (!str && errcode == 1)
+	{
+		ft_putstr_fd("minishell: fork: Resource temporarily unavailable\n", 2);
+		g_exit_status = 1;
+		return ;
+	}
+	else if (str)
+		ft_process_error(str, errcode, all);
+}
+
 void	print_error(char *str, int errcode, t_data *all)
 {
 	if (errcode == 127 && str)
@@ -47,17 +64,6 @@ void	print_error(char *str, int errcode, t_data *all)
 		ft_error_msg(str, ": is a directory\n");
 		exit(126);
 	}
-	else if (errcode == 6 && str)
-	{
-		ft_error_msg(str, ": No such file or directory\n");
-		exit(126);
-	}
-	else if (!str && errcode == 1)
-	{
-		ft_putstr_fd("minishell: fork: Resource temporarily unavailable\n", 2);
-		g_exit_status = 1;
-		return ;
-	}
-	else if (str)
-		ft_process_error(str, errcode, all);
+	else
+		print_error_utils(str, errcode, all);
 }
