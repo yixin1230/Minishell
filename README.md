@@ -1,6 +1,6 @@
 <h1 align="center">  Minishell </h1>
 
-<h2 align="center">This 42 project is an introduction to the beautiful world of Raytracing.</h2>
+<h2 align="center">This project is an introduction to the beautiful world of Raytracing.</h2>
 <br>
 <p align="center">
 <p align="center">
