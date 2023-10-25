@@ -6,7 +6,7 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/07/06 08:56:25 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/07/06 17:22:42 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/12 13:30:15 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ int	all_upper(char *str)
 	int	i;
 
 	i = 0;
-	while(str[i])
+	while (str[i])
 	{
-		if (str[i] >= 'a' && str[i]<= 'z')
+		if (str[i] >= 'a' && str[i] <= 'z')
 			return (0);
 		i++;
 	}
@@ -28,12 +28,12 @@ int	all_upper(char *str)
 
 int	env_index(t_token *token, char **envp)
 {
-	int	i;
+	int		i;
 	char	*tmp;
 
 	i = -1;
 	tmp = ft_strjoin(&token->str[1], "=");
-	while(envp[++i])
+	while (envp[++i])
 	{
 		if (ft_strnstr(envp[i], tmp, ft_strlen(tmp)) != NULL)
 		{
@@ -41,24 +41,25 @@ int	env_index(t_token *token, char **envp)
 			return (i);
 		}
 	}
-	free(tmp);	
+	free(tmp);
 	return (-1);
 }
 
 char	*find_env(t_token **token, char **envp)
 {
 	int	index;
+	int	i;
 
+	i = 0;
 	if (!*token)
 		return (NULL);
-	if (ft_strcmp((*token)->str, "$") == 0)
-		return ((*token)->str);
 	index = env_index(*token, envp);
 	if (index == -1 || !envp[index])
 		return (NULL);
-	return (envp[index]);
+	while (envp[index][i] != '=')
+		i++;
+	return (&envp[index][i + 1]);
 }
-
 
 //test: gcc find_env.c ../tokenized/token_util.c ../../libft/libft.a
 

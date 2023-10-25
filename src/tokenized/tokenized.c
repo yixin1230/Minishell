@@ -6,100 +6,101 @@
 /*   By: yizhang <yizhang@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/06/08 13:37:57 by yizhang       #+#    #+#                 */
-/*   Updated: 2023/07/06 17:07:31 by yizhang       ########   odam.nl         */
+/*   Updated: 2023/07/19 11:26:03 by yizhang       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../minishell.h"
 
-int	quote_check(char *str)
+static void	if_dquo(t_token *curr, t_token *to_tmp, char **envp)
 {
-	int	i;
-	int	d_quo;
-	int	s_quo;
-	int	start;
-	int	len;
-
-	i = 0;
-	d_quo = 0;
-	s_quo = 0;
-	len =0;
-	start = 0;
-	if (!str)
-		return (0);
-	while (str[i])
-	{
-		if (str[i] == '\'')
-			i = quote_count(str, i, &s_quo, '\'');
-		if (str[i] == '\"')
-			i = quote_count(str, i, &d_quo, '\"');
-		i++;
-	}
-	if (s_quo % 2 != 0 || d_quo % 2 != 0)
-	{
-		printf("unclosed quote error \n");
-		exit (1);
-	}
-	return (0);
+	if (!envp)
+		return ;
+	to_tmp = dollar_split(curr->str, DQUO);
+	swap_val(&to_tmp, envp);
+	free(curr->str);
+	curr->str = token_to_str(&to_tmp);
+	curr->type = WORD;
 }
 
-int quote_count(char *str, int i,int *quo_nb, char quo)
+static t_token	*extract_words(t_token *curr, char **words, char **envp)
 {
-	*quo_nb += 1;
-	i++;
-	while(str[i])
-	{
-		if (str[i] == quo)
-		{
-			*quo_nb += 1;
-			break ;
-		}
-		i++;
-	}
-	return (i);
-}
-
-void	tokenized(t_data *all, char **envp)
-{
-	t_token		*curr;
+	t_token	*to_tmp;
 	char	*tmp;
 
+	to_tmp = NULL;
 	tmp = NULL;
-	if (quote_check(all->input) == 1)
-		exit (1);
-	all->token = split_token(all->input);
-	curr = all->token;
+	while (curr && (curr->type == WORD
+			|| curr->type == SQUO || curr->type == DQUO))
+	{
+		if (curr->str && curr->type == DQUO)
+			if_dquo(curr, to_tmp, envp);
+		free_token(to_tmp);
+		if (!*words)
+			*words = ft_strdup(curr->str);
+		else
+		{
+			tmp = *words;
+			*words = ft_strjoin(*words, curr->str);
+			free(tmp);
+		}
+		if (check_type_break(curr))
+			break ;
+		curr = curr->next;
+	}
+	return (curr);
+}
+
+t_token	*delspace_jointoken(t_token **token, t_token *top, 
+	char *words, char **envp)
+{
+	t_token	*curr;
+	t_token	*new;
+
+	curr = *token;
+	top = NULL;
+	while (curr)
+	{
+		if (curr && (curr->type == WORD || curr->type == SQUO
+				|| curr->type == DQUO))
+		{
+			words = NULL;
+			curr = extract_words(curr, &words, envp);
+			new = new_token(words);
+			new->type = WORD;
+			add_token_end(&top, new);
+		}
+		else if (curr && curr->type != SPACES)
+			add_token_end(&top, copy_token(curr));
+		if (!curr->next)
+			break ;
+		curr = curr->next;
+	}
+	return (top);
+}
+
+static void	ft_assign_to_enum(t_token *curr)
+{
 	while (curr != NULL)
 	{
-		if (ft_strcmp(curr->str, "|") == 0 && curr->type == EMPTY)
-			curr->type = PIPE;
-		else if (ft_strcmp(curr->str, "<") == 0 && curr->type == EMPTY)
-			curr->type = INPUT_RE;
-		else if (ft_strcmp(curr->str, ">") == 0 && curr->type == EMPTY)
-			curr->type = OUTPUT_RE;
-		else if (ft_strcmp(curr->str, "<<") == 0 && curr->type == EMPTY)
-			curr->type = HERE_DOC;
-		else if (ft_strcmp(curr->str, ">>") == 0 && curr->type == EMPTY)
-			curr->type = APPEND_RE;
-		else if (curr->str[0] == '$' && curr->type == EMPTY)
-		{
-			tmp = find_env(&curr, envp);
-			if (tmp)
-				curr->str = ft_strdup(tmp);
-			else
-				curr->str = NULL;
-			curr->type = WORD;
-		}
-		else if (curr->prev && curr->prev->type == INPUT_RE && curr->type == EMPTY)
+		if (curr->str && curr->prev
+			&& curr->prev->type == INPUT_RE
+			&& (curr->type == WORD || curr->type == SQUO))
 			curr->type = INFILE;
-		else if (curr->prev && curr->prev->type == OUTPUT_RE && curr->type == EMPTY)
+		else if (curr->str && curr->prev
+			&& curr->prev->type == OUTPUT_RE 
+			&& (curr->type == WORD || curr->type == SQUO))
 			curr->type = OUTFILE;
-		else if (curr->prev && curr->prev->type == APPEND_RE && curr->type == EMPTY)
+		else if (curr->str && curr->prev
+			&& curr->prev->type == APPEND_RE
+			&& (curr->type == WORD || curr->type == SQUO))
 			curr->type = APPFILE;
-		else if (curr->prev && curr->prev->type == HERE_DOC && curr->type == EMPTY)
+		else if (curr->str && curr->prev
+			&& curr->prev->type == HERE_DOC
+			&& (curr->type == WORD || curr->type == SQUO))
 			curr->type = DELIMI;
-		else if (curr->type == EMPTY)
+		else if (curr->str && (curr->type == EMPTY 
+				|| curr->type == SQUO || curr->type == DQUO))
 			curr->type = WORD;
 		if (!curr->next)
 			return ;
@@ -107,40 +108,28 @@ void	tokenized(t_data *all, char **envp)
 	}
 }
 
-//test:gcc split_token.c token_util.c tokenized.c ../env/find_env.c ../../libft/libft.a
-
-/* int main(int argc, char **argv,char **envp)
+int	tokenized(t_data *all)
 {
-	t_token *curr;
-	t_data	all;
-	char *str;
+	t_token		*curr;
+	t_token		*to_tmp;
+	char		**envp;
+	char		*words;
 
-	all.cmd =NULL;
-	all.history =NULL;
-	(void)argc;
-	(void)argv;
-	//all.input = "  c\"\'\" asdasda\"\'\">&| \"|\" ";
-	//all.input = " cmd arg| cmd";
-	//all.input = "  chkhk df";
-	//all.input = "  chkhk df >outfile <infile";
-	//all.input = " cmd <file  >outfile | \"|\"<infile";
-	//all.input = "cat <file1 cat > out | <ls| <file cmd"; //break pipe
-	//all.input = " $PATH $$<< infile <infile cmd arg>outfile| cmd1 aa a a a >1outfile|";//$$ error
-	all.input = " $PATH ADS  $sdf $ df ";
-	//all.input = " $PATH ";
-	//all.input = "||\"|\"cmd "; //break pipe
-	//all.input = " \"echo\" hello ";
-	//all.input = " \"echo\" hello | wc";
-	//all.input = "<file1 cat > out \"|\" <infile "; //works 
-	//all.input = " <infile cmd >outfile | <infile";
-	tokenized(&all, envp);
-	curr = all.token;
-	printf("test:%s\n", all.input);
-	 while (curr != NULL)
-	{
-		printf(" %i: type :%i :%s\n", curr->index, curr->type , curr->str);
-		curr = curr->next;
-	} 
-	return 0;
-} */
-
+	words = NULL;
+	curr = NULL;
+	envp = ft_get_envp(all->env);
+	if (quote_check(all->input) == 1)
+		return (1);
+	to_tmp = NULL;
+	to_tmp = dollar_split(all->input, 0);
+	swap_val(&to_tmp, envp);
+	free(all->input);
+	all->input = token_to_str(&to_tmp);
+	to_tmp = split_token(all->input);
+	all->token = delspace_jointoken(&to_tmp, curr, words, envp);
+	free_token(to_tmp);
+	curr = all->token;
+	ft_assign_to_enum(curr);
+	free_envp(envp);
+	return (0);
+}

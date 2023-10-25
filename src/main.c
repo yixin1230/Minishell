@@ -12,22 +12,57 @@
 
 #include "minishell.h"
 
+// void leaks(void)
+// {
+// 	system("leaks -q minishell");
+// }
 
-
-int main(int argc, char **argv, char **envp)
+static void	first_check(int argc, char **argv)
 {
-	t_data all;
+	if (argc != 1 || argv[1])
+	{
+		printf(RED "!" RESET " This program does not accept arguments" \
+				RED "!\n" RESET);
+		exit(0);
+	}
+}
 
-	(void)argc;
-	(void)argv;
-	all.envp = envp;
+static void	init_all(t_data *all)
+{
+	all->tmp_out = dup(1);
+	all->tmp_fd = dup(0);
+	protect_dup2(all->tmp_out, 1, all);
+	protect_dup2(all->tmp_fd, 0, all);
+	all->cmd = NULL;
+	all->token = NULL;
+	all->id = NULL;
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_data	all;
+	char	*prompt;
+	char	*input;
+
+	first_check(argc, argv);
+	all.env = init_env(envp);
 	while (1)
 	{
-		all.input = readline("minishell-> ");
-		add_history(all.input);
-		//create_history(&all);
-		ft_commands(envp, &all);
-		free(all.input);
+		init_all(&all);
+		handle_signal(1);
+		prompt = display_prompt();
+		input = readline(prompt);
+		ft_free(prompt);
+		if (input == NULL)
+		{
+			printf("exit\n");
+			exit(0);
+		}
+		all.input = input;
+		if (input != NULL)
+			add_history(all.input);
+		ft_commands(&all);
+		free_all(&all);
 	}
 	return (0);
 }
